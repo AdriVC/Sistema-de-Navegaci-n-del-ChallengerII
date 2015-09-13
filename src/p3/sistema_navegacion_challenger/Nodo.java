@@ -9,11 +9,13 @@ public class Nodo {
     String nombre;
     Icon foto;
     ArrayList <Flecha> flechas_salientes;
+    String path;
 
     public Nodo(String nombre, String path_foto) {
         this.nombre = nombre;
         this.foto = new ImageIcon(path_foto);
         flechas_salientes = new ArrayList();
+        this.path = path_foto;
     }
 
     public String getNombre() {
@@ -26,6 +28,10 @@ public class Nodo {
 
     public Icon getFoto() {
         return foto;
+    }
+    
+    public String getFotoPath() {
+        return path;
     }
 
     public void setFoto(String path_foto) {
