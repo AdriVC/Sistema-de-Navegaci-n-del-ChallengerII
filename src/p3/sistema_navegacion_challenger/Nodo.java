@@ -1,14 +1,15 @@
 
 package p3.sistema_navegacion_challenger;
 
+import java.awt.Point;
 import java.util.*;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 public class Nodo {
     String nombre;
-    Icon foto;
+    ImageIcon foto;
     ArrayList <Flecha> flechas_salientes;
+    Point posicion;
     String path;
 
     public Nodo(String nombre, String path_foto) {
@@ -16,6 +17,19 @@ public class Nodo {
         this.foto = new ImageIcon(path_foto);
         flechas_salientes = new ArrayList();
         this.path = path_foto;
+        this.posicion = new Point(0,0);
+    }
+    
+    public void setPosicion(int x, int y){
+        this.posicion.setLocation(x, y);
+    }
+    
+    public void setPosicion(Point p){
+        this.posicion.setLocation(p);
+    }
+    
+    public Point getPosicion(){
+        return posicion;
     }
 
     public String getNombre() {
@@ -26,7 +40,7 @@ public class Nodo {
         this.nombre = nombre;
     }
 
-    public Icon getFoto() {
+    public ImageIcon getFoto() {
         return foto;
     }
     
@@ -55,12 +69,13 @@ public class Nodo {
     }
     
     public String toString(){
-        String retornable = "";
-        retornable += nombre + ":";
-        for (int i = 0; i < flechas_salientes.size(); i++) {
-            retornable += " (" + i + ")" + flechas_salientes.get(i).toString();
-        }
-        return retornable;
+//        String retornable = "";
+//        retornable += nombre + ":";
+//        for (int i = 0; i < flechas_salientes.size(); i++) {
+//            retornable += " (" + i + ")" + flechas_salientes.get(i).toString();
+//        }
+//        return retornable;
+        return nombre;
     }
    
 }

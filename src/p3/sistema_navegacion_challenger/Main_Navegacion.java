@@ -6,15 +6,18 @@
 package p3.sistema_navegacion_challenger;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.geom.Line2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -40,9 +43,10 @@ public class Main_Navegacion extends javax.swing.JFrame {
         jl_Go.setIcon(new ImageIcon("./Resources/go-button.png"));
         jl_MapaActual.setIcon(new ImageIcon("./Resources/cuadricula_mapa_2.png"));
         jl_ventana.setText("");
-        jl_ventana.setIcon(new ImageIcon("./Resources/vista_ventana.png"));
+        jl_ventana.setIcon(new ImageIcon("./Resources/Hilo/vista_ventana.png"));
         jl_agregarPlaneta_openFoto.setIcon(new ImageIcon("./Resources/open_file.png"));
         jb_editorRutas.setEnabled(false);
+        agregar = true;
     }
 
     /**
@@ -55,41 +59,40 @@ public class Main_Navegacion extends javax.swing.JFrame {
     private void initComponents() {
 
         JF_visitaMapas = new javax.swing.JFrame();
-        JTP_agregar_editar = new javax.swing.JTabbedPane();
-        JP_nodos = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
-        jSeparator3 = new javax.swing.JSeparator();
         jScrollPane2 = new javax.swing.JScrollPane();
         jt_planetasExistentes = new javax.swing.JTable();
-        jLabel7 = new javax.swing.JLabel();
-        jSeparator4 = new javax.swing.JSeparator();
+        jSeparator3 = new javax.swing.JSeparator();
+        jb_agregarFlecha_nuevo = new javax.swing.JButton();
+        jb_visitaMapas_cerrar = new javax.swing.JButton();
         jb_agregarPlaneta_nuevo = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jt_flechasExistentes = new javax.swing.JTable();
+        jpm_modificarEliminar = new javax.swing.JPopupMenu();
+        jmi_modificar = new javax.swing.JMenuItem();
+        jmi_eliminar = new javax.swing.JMenuItem();
+        jd_modificarPlanetas = new javax.swing.JDialog();
         jLabel8 = new javax.swing.JLabel();
         jTF_agregarNodo_nombre = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
-        jl_agregarPlaneta_icon = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jl_agregarPlaneta_openFoto = new javax.swing.JLabel();
-        jb_visitaMapas_cerrar = new javax.swing.JButton();
-        JP_flechas = new javax.swing.JPanel();
-        jb_agregarFlecha_nuevo = new javax.swing.JButton();
-        jcb_agregarFlecha_partida = new javax.swing.JComboBox();
-        jcb_agregarFlecha_destino = new javax.swing.JComboBox();
+        jl_agregarPlaneta_icon = new javax.swing.JLabel();
+        jl_modificarPlaneta_titulo = new javax.swing.JLabel();
+        jb_planeta_guardarCambios = new javax.swing.JButton();
+        jd_modificarFlechas = new javax.swing.JDialog();
+        jl_modificarFlechas_titulo = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jcb_agregarFlecha_partida = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        jcb_agregarFlecha_destino = new javax.swing.JComboBox();
         jsp_agregarFlecha_peso = new javax.swing.JSpinner();
-        jLabel4 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jt_flechasExistentes = new javax.swing.JTable();
-        jLabel5 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
-        jb_visitaMapas_close = new javax.swing.JButton();
-        jl_planeta1 = new javax.swing.JLabel();
-        jl_planet2 = new javax.swing.JLabel();
-        jl_planeta3 = new javax.swing.JLabel();
-        jl_planeta4 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jb_flechas_guardarCambios = new javax.swing.JButton();
+        JTP_agregar_editar = new javax.swing.JTabbedPane();
         jl_ventana = new javax.swing.JLabel();
         jl_MapaActual = new javax.swing.JLabel();
         jl_Go = new javax.swing.JLabel();
@@ -97,13 +100,13 @@ public class Main_Navegacion extends javax.swing.JFrame {
         jb_editorRutas = new javax.swing.JButton();
         jb_abrirRuta = new javax.swing.JButton();
 
-        JF_visitaMapas.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        JF_visitaMapas.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         JF_visitaMapas.setBackground(new java.awt.Color(255, 255, 255));
         JF_visitaMapas.setForeground(java.awt.Color.black);
+        JF_visitaMapas.setMaximumSize(new java.awt.Dimension(2147483647, 600));
+        JF_visitaMapas.setMinimumSize(new java.awt.Dimension(0, 600));
 
         jLabel6.setText("PLANETAS EXISTENTES");
-
-        jSeparator3.setForeground(new java.awt.Color(153, 153, 153));
 
         jt_planetasExistentes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -124,32 +127,19 @@ public class Main_Navegacion extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(jt_planetasExistentes);
-
-        jLabel7.setText("AGREGAR NUEVO PLANETA");
-
-        jSeparator4.setForeground(new java.awt.Color(153, 153, 153));
-
-        jb_agregarPlaneta_nuevo.setText("Agregar");
-        jb_agregarPlaneta_nuevo.addMouseListener(new java.awt.event.MouseAdapter() {
+        jt_planetasExistentes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jb_agregarPlaneta_nuevoMouseClicked(evt);
+                jt_planetasExistentesMouseClicked(evt);
             }
         });
+        jScrollPane2.setViewportView(jt_planetasExistentes);
 
-        jLabel8.setText("Nombre:");
+        jSeparator3.setForeground(new java.awt.Color(153, 153, 153));
 
-        jLabel9.setText("Icono:");
-
-        jl_agregarPlaneta_icon.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        jLabel11.setText("Examinar:");
-
-        jl_agregarPlaneta_openFoto.setText("o");
-        jl_agregarPlaneta_openFoto.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jl_agregarPlaneta_openFoto.addMouseListener(new java.awt.event.MouseAdapter() {
+        jb_agregarFlecha_nuevo.setText("Agregar Flecha");
+        jb_agregarFlecha_nuevo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jl_agregarPlaneta_openFotoMouseClicked(evt);
+                jb_agregarFlecha_nuevoMouseClicked(evt);
             }
         });
 
@@ -160,99 +150,16 @@ public class Main_Navegacion extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout JP_nodosLayout = new javax.swing.GroupLayout(JP_nodos);
-        JP_nodos.setLayout(JP_nodosLayout);
-        JP_nodosLayout.setHorizontalGroup(
-            JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(JP_nodosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, JP_nodosLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSeparator3))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, JP_nodosLayout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSeparator4))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, JP_nodosLayout.createSequentialGroup()
-                        .addGroup(JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(JP_nodosLayout.createSequentialGroup()
-                                .addGap(31, 31, 31)
-                                .addGroup(JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel9)
-                                    .addGroup(JP_nodosLayout.createSequentialGroup()
-                                        .addComponent(jLabel8)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jTF_agregarNodo_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 324, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(JP_nodosLayout.createSequentialGroup()
-                                        .addGap(28, 28, 28)
-                                        .addComponent(jLabel11)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jl_agregarPlaneta_openFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(50, 50, 50)
-                                        .addComponent(jl_agregarPlaneta_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, JP_nodosLayout.createSequentialGroup()
-                                .addComponent(jb_agregarPlaneta_nuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jb_visitaMapas_cerrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 18, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        JP_nodosLayout.setVerticalGroup(
-            JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(JP_nodosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jTF_agregarNodo_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel9)
-                .addGroup(JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(JP_nodosLayout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addGroup(JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel11)
-                            .addComponent(jl_agregarPlaneta_openFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JP_nodosLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jl_agregarPlaneta_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(JP_nodosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jb_agregarPlaneta_nuevo)
-                    .addComponent(jb_visitaMapas_cerrar))
-                .addContainerGap())
-        );
-
-        JTP_agregar_editar.addTab("Planetas", JP_nodos);
-
-        jb_agregarFlecha_nuevo.setText("Agregar");
-        jb_agregarFlecha_nuevo.addMouseListener(new java.awt.event.MouseAdapter() {
+        jb_agregarPlaneta_nuevo.setText("Agregar Planeta");
+        jb_agregarPlaneta_nuevo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jb_agregarFlecha_nuevoMouseClicked(evt);
+                jb_agregarPlaneta_nuevoMouseClicked(evt);
             }
         });
 
-        jLabel1.setText("Partida:");
+        jLabel5.setText("FLECHAS EXISTENTES");
 
-        jLabel2.setText("Destino:");
-
-        jLabel3.setText("Peso:");
-
-        jLabel4.setText("AGREGAR NUEVA FLECHA");
-
-        jSeparator1.setForeground(new java.awt.Color(153, 153, 153));
+        jSeparator2.setForeground(new java.awt.Color(153, 153, 153));
 
         jt_flechasExistentes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -280,147 +187,233 @@ public class Main_Navegacion extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jt_flechasExistentes);
-
-        jLabel5.setText("FLECHAS EXISTENTES");
-
-        jSeparator2.setForeground(new java.awt.Color(153, 153, 153));
-
-        jb_visitaMapas_close.setText("Cerrar");
-        jb_visitaMapas_close.addMouseListener(new java.awt.event.MouseAdapter() {
+        jt_flechasExistentes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jb_visitaMapas_closeMouseClicked(evt);
+                jt_flechasExistentesMouseClicked(evt);
             }
         });
+        jScrollPane1.setViewportView(jt_flechasExistentes);
 
-        javax.swing.GroupLayout JP_flechasLayout = new javax.swing.GroupLayout(JP_flechas);
-        JP_flechas.setLayout(JP_flechasLayout);
-        JP_flechasLayout.setHorizontalGroup(
-            JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(JP_flechasLayout.createSequentialGroup()
-                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(JP_flechasLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, JP_flechasLayout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(JP_flechasLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jb_agregarFlecha_nuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jb_visitaMapas_close, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(JP_flechasLayout.createSequentialGroup()
-                                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jcb_agregarFlecha_partida, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jcb_agregarFlecha_destino, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JP_flechasLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(jsp_agregarFlecha_peso, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
-                .addContainerGap())
-            .addGroup(JP_flechasLayout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(JP_flechasLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(JP_flechasLayout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                    .addComponent(jb_agregarFlecha_nuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jb_visitaMapas_cerrar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSeparator3))
+                    .addComponent(jb_agregarPlaneta_nuevo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSeparator2)
-                        .addContainerGap())))
+                        .addComponent(jSeparator2)))
+                .addContainerGap())
         );
-        JP_flechasLayout.setVerticalGroup(
-            JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JP_flechasLayout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jb_agregarPlaneta_nuevo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jcb_agregarFlecha_partida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                .addComponent(jb_agregarFlecha_nuevo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jcb_agregarFlecha_destino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jsp_agregarFlecha_peso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(JP_flechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jb_agregarFlecha_nuevo)
-                    .addComponent(jb_visitaMapas_close))
-                .addGap(14, 14, 14))
+                .addComponent(jb_visitaMapas_cerrar)
+                .addContainerGap())
         );
-
-        JTP_agregar_editar.addTab("Flechas", JP_flechas);
-
-        jl_planeta1.setForeground(new java.awt.Color(51, 255, 255));
-        jl_planeta1.setText("p1");
-
-        jl_planet2.setForeground(new java.awt.Color(0, 255, 255));
-        jl_planet2.setText("p2");
-        jl_planet2.setSize(new java.awt.Dimension(32, 32));
-
-        jl_planeta3.setForeground(new java.awt.Color(0, 204, 255));
-        jl_planeta3.setText("p3");
-
-        jl_planeta4.setForeground(new java.awt.Color(0, 204, 204));
-        jl_planeta4.setText("p4");
 
         javax.swing.GroupLayout JF_visitaMapasLayout = new javax.swing.GroupLayout(JF_visitaMapas.getContentPane());
         JF_visitaMapas.getContentPane().setLayout(JF_visitaMapasLayout);
         JF_visitaMapasLayout.setHorizontalGroup(
             JF_visitaMapasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(JF_visitaMapasLayout.createSequentialGroup()
-                .addGroup(JF_visitaMapasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(JF_visitaMapasLayout.createSequentialGroup()
-                        .addGap(69, 69, 69)
-                        .addComponent(jl_planet2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jl_planeta3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(57, 57, 57))
-                    .addGroup(JF_visitaMapasLayout.createSequentialGroup()
-                        .addGroup(JF_visitaMapasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(JF_visitaMapasLayout.createSequentialGroup()
-                                .addGap(285, 285, 285)
-                                .addComponent(jl_planeta1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(JF_visitaMapasLayout.createSequentialGroup()
-                                .addGap(271, 271, 271)
-                                .addComponent(jl_planeta4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(283, 283, 283)))
-                .addComponent(JTP_agregar_editar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(600, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         JF_visitaMapasLayout.setVerticalGroup(
             JF_visitaMapasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(JTP_agregar_editar, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
-            .addGroup(JF_visitaMapasLayout.createSequentialGroup()
-                .addGap(83, 83, 83)
-                .addComponent(jl_planeta1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(143, 143, 143)
-                .addGroup(JF_visitaMapasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jl_planet2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jl_planeta3, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jl_planeta4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(104, 104, 104))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jmi_modificar.setText("Modificar");
+        jmi_modificar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jmi_modificarMouseClicked(evt);
+            }
+        });
+        jpm_modificarEliminar.add(jmi_modificar);
+
+        jmi_eliminar.setText("Eliminar");
+        jmi_eliminar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jmi_eliminarMouseClicked(evt);
+            }
+        });
+        jpm_modificarEliminar.add(jmi_eliminar);
+
+        jd_modificarPlanetas.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jLabel8.setText("Nombre:");
+
+        jLabel9.setText("Icono:");
+
+        jLabel11.setText("Examinar:");
+
+        jl_agregarPlaneta_openFoto.setText("o");
+        jl_agregarPlaneta_openFoto.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jl_agregarPlaneta_openFoto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jl_agregarPlaneta_openFotoMouseClicked(evt);
+            }
+        });
+
+        jl_agregarPlaneta_icon.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jl_modificarPlaneta_titulo.setText("AGREGAR NUEVO PLANETA");
+
+        jb_planeta_guardarCambios.setText("Guardar Cambios");
+        jb_planeta_guardarCambios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jb_planeta_guardarCambiosMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jd_modificarPlanetasLayout = new javax.swing.GroupLayout(jd_modificarPlanetas.getContentPane());
+        jd_modificarPlanetas.getContentPane().setLayout(jd_modificarPlanetasLayout);
+        jd_modificarPlanetasLayout.setHorizontalGroup(
+            jd_modificarPlanetasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jd_modificarPlanetasLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jl_modificarPlaneta_titulo)
+                .addGap(102, 102, 102))
+            .addGroup(jd_modificarPlanetasLayout.createSequentialGroup()
+                .addGroup(jd_modificarPlanetasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jd_modificarPlanetasLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addGroup(jd_modificarPlanetasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel9)
+                            .addGroup(jd_modificarPlanetasLayout.createSequentialGroup()
+                                .addComponent(jLabel8)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jTF_agregarNodo_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jd_modificarPlanetasLayout.createSequentialGroup()
+                                .addGap(28, 28, 28)
+                                .addComponent(jLabel11)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jl_agregarPlaneta_openFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(50, 50, 50)
+                                .addComponent(jl_agregarPlaneta_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jd_modificarPlanetasLayout.createSequentialGroup()
+                        .addGap(56, 56, 56)
+                        .addComponent(jb_planeta_guardarCambios, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+        jd_modificarPlanetasLayout.setVerticalGroup(
+            jd_modificarPlanetasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jd_modificarPlanetasLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jl_modificarPlaneta_titulo, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
+                .addGroup(jd_modificarPlanetasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jTF_agregarNodo_nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel9)
+                .addGroup(jd_modificarPlanetasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jd_modificarPlanetasLayout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addGroup(jd_modificarPlanetasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(jl_agregarPlaneta_openFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jd_modificarPlanetasLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jl_agregarPlaneta_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(33, 33, 33)
+                .addComponent(jb_planeta_guardarCambios)
+                .addGap(20, 20, 20))
+        );
+
+        jd_modificarFlechas.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        jl_modificarFlechas_titulo.setText("AGREGAR NUEVA FLECHA");
+
+        jLabel1.setText("Partida:");
+
+        jLabel2.setText("Destino:");
+
+        jLabel3.setText("Peso:");
+
+        jb_flechas_guardarCambios.setText("Guardar Cambios");
+        jb_flechas_guardarCambios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jb_flechas_guardarCambiosMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jd_modificarFlechasLayout = new javax.swing.GroupLayout(jd_modificarFlechas.getContentPane());
+        jd_modificarFlechas.getContentPane().setLayout(jd_modificarFlechasLayout);
+        jd_modificarFlechasLayout.setHorizontalGroup(
+            jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jd_modificarFlechasLayout.createSequentialGroup()
+                .addGroup(jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jd_modificarFlechasLayout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addGroup(jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jd_modificarFlechasLayout.createSequentialGroup()
+                                .addGroup(jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(jcb_agregarFlecha_destino, javax.swing.GroupLayout.Alignment.LEADING, 0, 266, Short.MAX_VALUE)
+                                        .addComponent(jcb_agregarFlecha_partida, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(jsp_agregarFlecha_peso, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jb_flechas_guardarCambios, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jd_modificarFlechasLayout.createSequentialGroup()
+                        .addGap(106, 106, 106)
+                        .addComponent(jl_modificarFlechas_titulo)))
+                .addContainerGap(20, Short.MAX_VALUE))
+        );
+        jd_modificarFlechasLayout.setVerticalGroup(
+            jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jd_modificarFlechasLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jl_modificarFlechas_titulo)
+                .addGap(26, 26, 26)
+                .addGroup(jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jcb_agregarFlecha_partida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jcb_agregarFlecha_destino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jd_modificarFlechasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jsp_agregarFlecha_peso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addComponent(jb_flechas_guardarCambios)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -517,6 +510,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         int seleccion = jfc_abrirRuta.showOpenDialog(new JFrame());
         if (seleccion == JFileChooser.APPROVE_OPTION) {
             String file = jfc_abrirRuta.getSelectedFile().getPath();
+            ruta_actual = null;
             try {
                 Scanner leer = new Scanner(new File(file));
                 while (leer.hasNext()) {
@@ -560,14 +554,58 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jl_agregarPlaneta_openFotoMouseClicked
 
     private void jb_agregarPlaneta_nuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_agregarPlaneta_nuevoMouseClicked
+        if(agregar){
+            jl_modificarPlaneta_titulo.setText("AGREGAR NUEVO PLANETA:");
+            jd_modificarPlanetas.pack();
+            jd_modificarPlanetas.setVisible(true);
+        }else{ //modificar
+            
+        }
+    }//GEN-LAST:event_jb_agregarPlaneta_nuevoMouseClicked
+
+    private void jb_agregarFlecha_nuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_agregarFlecha_nuevoMouseClicked
+       if(agregar){
+            jl_modificarFlechas_titulo.setText("AGREGAR NUEVA FLECHA:");
+            jd_modificarFlechas.pack();
+            jd_modificarFlechas.setVisible(true);
+        }else{ //modificar
+            
+        } 
+    }//GEN-LAST:event_jb_agregarFlecha_nuevoMouseClicked
+
+    private void jb_visitaMapas_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_visitaMapas_cerrarMouseClicked
+        JF_visitaMapas.setVisible(false);
+    }//GEN-LAST:event_jb_visitaMapas_cerrarMouseClicked
+
+    private void jt_flechasExistentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_flechasExistentesMouseClicked
+        if(evt.isMetaDown() && jt_flechasExistentes.getSelectedRow() >= 0){  
+            jpm_modificarEliminar.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_jt_flechasExistentesMouseClicked
+
+    private void jt_planetasExistentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_planetasExistentesMouseClicked
+        if(evt.isMetaDown() && jt_flechasExistentes.getSelectedRow() >= 0){  
+            jpm_modificarEliminar.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_jt_planetasExistentesMouseClicked
+
+    private void jmi_eliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jmi_eliminarMouseClicked
+        
+    }//GEN-LAST:event_jmi_eliminarMouseClicked
+
+    private void jmi_modificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jmi_modificarMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jmi_modificarMouseClicked
+
+    private void jb_planeta_guardarCambiosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_planeta_guardarCambiosMouseClicked
         try{
             String[] prueba_path = path_imagen.split("/");
             if(!jTF_agregarNodo_nombre.getText().equals("") && prueba_path[prueba_path.length - 2].equals("Sprites")){
                 String path = "./Resources/Sprites/"+prueba_path[prueba_path.length-1];
                 ruta_actual.agregarNodo(new Nodo(jTF_agregarNodo_nombre.getText(),path));
-                JOptionPane.showMessageDialog(JF_visitaMapas, "Planeta agregado exitosamente");
                 jTF_agregarNodo_nombre.setText("");
                 jl_agregarPlaneta_icon.setIcon(null);
+                jd_modificarPlanetas.dispose();
                 reload_datos();
             }else{
                 JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
@@ -575,25 +613,18 @@ public class Main_Navegacion extends javax.swing.JFrame {
         }catch(NullPointerException e){
             JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
         }
-        
-    }//GEN-LAST:event_jb_agregarPlaneta_nuevoMouseClicked
+    }//GEN-LAST:event_jb_planeta_guardarCambiosMouseClicked
 
-    private void jb_agregarFlecha_nuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_agregarFlecha_nuevoMouseClicked
-        if(!jcb_agregarFlecha_partida.getSelectedItem().equals(null) && !jcb_agregarFlecha_destino.getSelectedItem().equals(null)){
+    private void jb_flechas_guardarCambiosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_flechas_guardarCambiosMouseClicked
+        if(!jcb_agregarFlecha_partida.getSelectedItem().equals("--") && !jcb_agregarFlecha_destino.getSelectedItem().equals("--")){
             ruta_actual.agregarFlecha(((Nodo)jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo)jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int)jsp_agregarFlecha_peso.getValue());
+            jsp_agregarFlecha_peso.setValue(0);
+            jd_modificarFlechas.dispose();
             reload_datos();
         }else{
             JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
         }
-    }//GEN-LAST:event_jb_agregarFlecha_nuevoMouseClicked
-
-    private void jb_visitaMapas_closeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_visitaMapas_closeMouseClicked
-        JF_visitaMapas.dispose();
-    }//GEN-LAST:event_jb_visitaMapas_closeMouseClicked
-
-    private void jb_visitaMapas_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_visitaMapas_cerrarMouseClicked
-        JF_visitaMapas.dispose();
-    }//GEN-LAST:event_jb_visitaMapas_cerrarMouseClicked
+    }//GEN-LAST:event_jb_flechas_guardarCambiosMouseClicked
 
     /**
      * @param args the command line arguments
@@ -631,6 +662,12 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }
     
     public void reload_datos(){
+        // grafica
+        Background grafica = new Background("./Resources/cuadricula_mapa.png",ruta_actual.lista_nodos);
+        ruta_actual.lista_nodos = grafica.getLista();
+        JF_visitaMapas.getContentPane().add(grafica);
+        
+        //tabla planetas
         DefaultTableModel modelo_planetas = (DefaultTableModel)jt_planetasExistentes.getModel();
         while(modelo_planetas.getRowCount() >0){
             modelo_planetas.removeRow(0);
@@ -641,6 +678,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         }
         jt_planetasExistentes.setModel(modelo_planetas);
         
+        //tabla flechas
         DefaultTableModel modelo_flechas = (DefaultTableModel)jt_flechasExistentes.getModel();
         while(modelo_flechas.getRowCount() >0){
             modelo_flechas.removeRow(0);
@@ -653,64 +691,75 @@ public class Main_Navegacion extends javax.swing.JFrame {
         }
         jt_flechasExistentes.setModel(modelo_flechas);
         
-        JF_visitaMapas.getContentPane().add(new Background("./Resources/cuadricula_mapa.png",ruta_actual.lista_nodos));
+        //combo box planetas de partida
+        DefaultComboBoxModel cb_planetas_partida = new DefaultComboBoxModel();
+        cb_planetas_partida.addElement("--");
+        for(Nodo tep:ruta_actual.lista_nodos){
+            cb_planetas_partida.addElement(tep);
+        }
+        jcb_agregarFlecha_partida.setModel(cb_planetas_partida);
+        
+        //combo box planetas destino
+        DefaultComboBoxModel cb_planetas_destino = new DefaultComboBoxModel();
+        cb_planetas_destino.addElement("--");
+        for(Nodo tep:ruta_actual.lista_nodos){
+            cb_planetas_destino.addElement(tep);
+        }
+        jcb_agregarFlecha_destino.setModel(cb_planetas_destino);
+        
+        //repaint
         JF_visitaMapas.repaint();
         JF_visitaMapas.pack();
-    }
-  
-    
-    public Point coordenadas_graficar(int pos){
-        int x = (int)(150*Math.cos(Math.toRadians(360/ruta_actual.lista_nodos.size()*(pos+1))));
-        int y = (int)(150*Math.sin(Math.toRadians(360/ruta_actual.lista_nodos.size()*(pos+1))));
-        return new Point(x+200,y+200);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFrame JF_visitaMapas;
-    private javax.swing.JPanel JP_flechas;
-    private javax.swing.JPanel JP_nodos;
     private javax.swing.JTabbedPane JTP_agregar_editar;
     private javax.swing.JCheckBox chb_activarWarp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JSeparator jSeparator4;
     private javax.swing.JTextField jTF_agregarNodo_nombre;
     private javax.swing.JButton jb_abrirRuta;
     private javax.swing.JButton jb_agregarFlecha_nuevo;
     private javax.swing.JButton jb_agregarPlaneta_nuevo;
     private javax.swing.JButton jb_editorRutas;
+    private javax.swing.JButton jb_flechas_guardarCambios;
+    private javax.swing.JButton jb_planeta_guardarCambios;
     private javax.swing.JButton jb_visitaMapas_cerrar;
-    private javax.swing.JButton jb_visitaMapas_close;
     private javax.swing.JComboBox jcb_agregarFlecha_destino;
     private javax.swing.JComboBox jcb_agregarFlecha_partida;
+    private javax.swing.JDialog jd_modificarFlechas;
+    private javax.swing.JDialog jd_modificarPlanetas;
     private javax.swing.JLabel jl_Go;
     private javax.swing.JLabel jl_MapaActual;
     private javax.swing.JLabel jl_agregarPlaneta_icon;
     private javax.swing.JLabel jl_agregarPlaneta_openFoto;
-    private javax.swing.JLabel jl_planet2;
-    private javax.swing.JLabel jl_planeta1;
-    private javax.swing.JLabel jl_planeta3;
-    private javax.swing.JLabel jl_planeta4;
+    private javax.swing.JLabel jl_modificarFlechas_titulo;
+    private javax.swing.JLabel jl_modificarPlaneta_titulo;
     private javax.swing.JLabel jl_ventana;
+    private javax.swing.JMenuItem jmi_eliminar;
+    private javax.swing.JMenuItem jmi_modificar;
+    private javax.swing.JPopupMenu jpm_modificarEliminar;
     private javax.swing.JSpinner jsp_agregarFlecha_peso;
     private javax.swing.JTable jt_flechasExistentes;
     private javax.swing.JTable jt_planetasExistentes;
     // End of variables declaration//GEN-END:variables
     Grafo ruta_actual;
     String path_imagen;
+    boolean agregar;
+    Nodo nodo_seleccionado;
+    Flecha flecha_seleccionada;
 }
 
 class Background extends JPanel {
@@ -727,20 +776,55 @@ class Background extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g.drawImage(Toolkit.getDefaultToolkit().getImage(path),0,0,this);
         for (int i = 0; i < lista_nodos.size(); i++) {
+            lista_nodos.get(i).setPosicion(coordenadas_graficar(i));
+        }
+        g.setColor(Color.white);
+        for (int i = 0; i < lista_nodos.size(); i++) {
+            Point cola = lista_nodos.get(i).getPosicion();
+            for (int j = 0; j < lista_nodos.get(i).flechas_salientes.size(); j++) {
+                Point cabeza = lista_nodos.get(i).flechas_salientes.get(j).getDestino().getPosicion();
+                g.drawLine(cola.x+15, cola.y+15, cabeza.x+15, cabeza.y+15);
+                drawArrowHead(g2, cabeza, cola, Color.white);
+            }
+        }
+        for (int i = 0; i < lista_nodos.size(); i++) {
             JLabel icono_nodo = new JLabel(lista_nodos.get(i).getFoto());
-            //icono_nodo.setLocation(coordenadas_graficar(i));
             icono_nodo.setSize(200, 200);
-            g.drawImage(Toolkit.getDefaultToolkit().getImage(lista_nodos.get(i).getFotoPath()), coordenadas_graficar(i).x, coordenadas_graficar(i).y, this);
+            g.drawImage(Toolkit.getDefaultToolkit().getImage(lista_nodos.get(i).getFotoPath()), lista_nodos.get(i).getPosicion().x, lista_nodos.get(i).getPosicion().y, this);
         }
     }
     
     public Point coordenadas_graficar(int pos){
-        int x = (int)(180*Math.cos(Math.toRadians(360/lista_nodos.size()*(pos+1))));
-        int y = (int)(180*Math.sin(Math.toRadians(360/lista_nodos.size()*(pos+1))));
-        return new Point(x+283,y+283);
+        int x = (int)(225*Math.cos(Math.toRadians(360/lista_nodos.size()*(pos+1))));
+        int y = (int)(225*Math.sin(Math.toRadians(360/lista_nodos.size()*(pos+1))));
+        return new Point(x+285,y+285);
     }
-
+    
+    public ArrayList<Nodo> getLista(){
+        return lista_nodos;
+    }
+    
+    private void drawArrowHead(Graphics2D g2, Point tip, Point tail, Color color){
+        double phi = Math.toRadians(35);
+        int barb = 15;
+        g2.setPaint(color);
+        double dy = tip.y - tail.y;
+        double dx = tip.x - tail.x;
+        double theta = Math.atan2(dy, dx);
+        //System.out.println("theta = " + Math.toDegrees(theta));
+        double x1, y1, x2, y2;
+        x1 = tip.x+15 - 20 * Math.cos(theta);
+        y1 = tip.y+15 - 20 * Math.sin(theta);
+        x2 = x1 - barb * Math.cos(theta+phi);
+        y2 = y1 - barb * Math.sin(theta+phi);
+        g2.draw(new Line2D.Double(x1, y1, x2, y2));
+        x2 = x1 - barb * Math.cos(theta-phi);
+        y2 = y1 - barb * Math.sin(theta-phi);
+        g2.draw(new Line2D.Double(x1, y1, x2, y2));
+    }
     
 }
