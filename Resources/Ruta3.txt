@@ -1,0 +1,1 @@
+Ruta3::Saturno,./Resources/Sprites/p7.png::Saturno,Saturno,0
