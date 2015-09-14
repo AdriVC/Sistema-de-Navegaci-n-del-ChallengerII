@@ -254,17 +254,17 @@ public class Main_Navegacion extends javax.swing.JFrame {
         );
 
         jmi_modificar.setText("Modificar");
-        jmi_modificar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jmi_modificarMouseClicked(evt);
+        jmi_modificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_modificarActionPerformed(evt);
             }
         });
         jpm_modificarEliminar.add(jmi_modificar);
 
         jmi_eliminar.setText("Eliminar");
-        jmi_eliminar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jmi_eliminarMouseClicked(evt);
+        jmi_eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmi_eliminarActionPerformed(evt);
             }
         });
         jpm_modificarEliminar.add(jmi_eliminar);
@@ -554,77 +554,127 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jl_agregarPlaneta_openFotoMouseClicked
 
     private void jb_agregarPlaneta_nuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_agregarPlaneta_nuevoMouseClicked
-        if(agregar){
-            jl_modificarPlaneta_titulo.setText("AGREGAR NUEVO PLANETA:");
-            jd_modificarPlanetas.pack();
-            jd_modificarPlanetas.setVisible(true);
-        }else{ //modificar
-            
-        }
+        jl_modificarPlaneta_titulo.setText("AGREGAR NUEVO PLANETA:");
+        jd_modificarPlanetas.pack();
+        jd_modificarPlanetas.setVisible(true);
     }//GEN-LAST:event_jb_agregarPlaneta_nuevoMouseClicked
 
     private void jb_agregarFlecha_nuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_agregarFlecha_nuevoMouseClicked
-       if(agregar){
             jl_modificarFlechas_titulo.setText("AGREGAR NUEVA FLECHA:");
             jd_modificarFlechas.pack();
-            jd_modificarFlechas.setVisible(true);
-        }else{ //modificar
-            
-        } 
+            jd_modificarFlechas.setVisible(true); 
     }//GEN-LAST:event_jb_agregarFlecha_nuevoMouseClicked
 
     private void jb_visitaMapas_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_visitaMapas_cerrarMouseClicked
-        JF_visitaMapas.setVisible(false);
+        JF_visitaMapas.dispose();
     }//GEN-LAST:event_jb_visitaMapas_cerrarMouseClicked
 
     private void jt_flechasExistentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_flechasExistentesMouseClicked
+        if(jt_planetasExistentes.getSelectedRow() >= 0){
+            jt_planetasExistentes.changeSelection(jt_planetasExistentes.getSelectedRow(),jt_planetasExistentes.getSelectedColumn(),true,false);
+        }
         if(evt.isMetaDown() && jt_flechasExistentes.getSelectedRow() >= 0){  
             jpm_modificarEliminar.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_jt_flechasExistentesMouseClicked
 
     private void jt_planetasExistentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_planetasExistentesMouseClicked
-        if(evt.isMetaDown() && jt_flechasExistentes.getSelectedRow() >= 0){  
+        if(jt_flechasExistentes.getSelectedRow() >= 0){
+            jt_flechasExistentes.changeSelection(jt_flechasExistentes.getSelectedRow(),jt_flechasExistentes.getSelectedColumn(),true,false);
+        }
+        if(evt.isMetaDown() && jt_planetasExistentes.getSelectedRow() >= 0){  
             jpm_modificarEliminar.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_jt_planetasExistentesMouseClicked
 
-    private void jmi_eliminarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jmi_eliminarMouseClicked
-        
-    }//GEN-LAST:event_jmi_eliminarMouseClicked
-
-    private void jmi_modificarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jmi_modificarMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jmi_modificarMouseClicked
-
     private void jb_planeta_guardarCambiosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_planeta_guardarCambiosMouseClicked
-        try{
-            String[] prueba_path = path_imagen.split("/");
-            if(!jTF_agregarNodo_nombre.getText().equals("") && prueba_path[prueba_path.length - 2].equals("Sprites")){
-                String path = "./Resources/Sprites/"+prueba_path[prueba_path.length-1];
-                ruta_actual.agregarNodo(new Nodo(jTF_agregarNodo_nombre.getText(),path));
-                jTF_agregarNodo_nombre.setText("");
-                jl_agregarPlaneta_icon.setIcon(null);
-                jd_modificarPlanetas.dispose();
-                reload_datos();
-            }else{
+        if (agregar) {
+            try {
+                String[] prueba_path = path_imagen.split("/");
+                if (!jTF_agregarNodo_nombre.getText().equals("") && prueba_path[prueba_path.length - 2].equals("Sprites")) {
+                    String path = "./Resources/Sprites/" + prueba_path[prueba_path.length - 1];
+                    ruta_actual.agregarNodo(new Nodo(jTF_agregarNodo_nombre.getText(), path));
+                    jTF_agregarNodo_nombre.setText("");
+                    jl_agregarPlaneta_icon.setIcon(null);
+                    jd_modificarPlanetas.dispose();
+                    reload_datos();
+                } else {
+                    JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
+                }
+            } catch (NullPointerException e) {
                 JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
-            }     
-        }catch(NullPointerException e){
-            JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
+            }
+        } else { //modificar
+
         }
     }//GEN-LAST:event_jb_planeta_guardarCambiosMouseClicked
 
     private void jb_flechas_guardarCambiosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_flechas_guardarCambiosMouseClicked
-        if(!jcb_agregarFlecha_partida.getSelectedItem().equals("--") && !jcb_agregarFlecha_destino.getSelectedItem().equals("--")){
-            ruta_actual.agregarFlecha(((Nodo)jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo)jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int)jsp_agregarFlecha_peso.getValue());
-            jsp_agregarFlecha_peso.setValue(0);
-            jd_modificarFlechas.dispose();
-            reload_datos();
-        }else{
-            JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
+        if(agregar){
+            if (!jcb_agregarFlecha_partida.getSelectedItem().equals("--") && !jcb_agregarFlecha_destino.getSelectedItem().equals("--")) {
+                ruta_actual.agregarFlecha(((Nodo) jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo) jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int) jsp_agregarFlecha_peso.getValue());
+                jsp_agregarFlecha_peso.setValue(0);
+                jd_modificarFlechas.dispose();
+                reload_datos();
+            } else {
+                JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
+            }
+        }else{ //modificar
+            if (!jcb_agregarFlecha_partida.getSelectedItem().equals("--") && !jcb_agregarFlecha_destino.getSelectedItem().equals("--")) {
+                Flecha cambio = null;
+                String partida = (String)jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 0);
+                String destino = (String)jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 1);
+                for (int i = 0; i < ruta_actual.lista_nodos.size(); i++) {
+                    for (int j = 0; j < ruta_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
+                        if (ruta_actual.lista_nodos.get(i).getNombre().equals(partida) && ruta_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
+                            cambio = ruta_actual.lista_nodos.get(i).flechas_salientes.get(j);
+                        }
+                    }
+                }
+                ruta_actual.deleteFlecha(cambio);
+                ruta_actual.agregarFlecha(((Nodo) jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo) jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int) jsp_agregarFlecha_peso.getValue());
+                jsp_agregarFlecha_peso.setValue(0);
+                jd_modificarFlechas.dispose();
+                reload_datos();
+            } else {
+                JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
+            }
         }
+        
     }//GEN-LAST:event_jb_flechas_guardarCambiosMouseClicked
+
+    private void jmi_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_modificarActionPerformed
+        agregar = false;
+        if(jt_flechasExistentes.getSelectedRow() >= 0){
+            jl_modificarFlechas_titulo.setText("MODIFICAR FLECHA");
+            String partida = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 0);
+            String destino = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 1);
+            Nodo part = null;
+            Nodo dest = null;
+            for (int i = 0; i < ruta_actual.lista_nodos.size(); i++) {
+                if (ruta_actual.lista_nodos.get(i).getNombre().equals(partida)) {
+                    part = ruta_actual.lista_nodos.get(i);
+                }
+                if (ruta_actual.lista_nodos.get(i).getNombre().equals(destino)) {
+                    dest = ruta_actual.lista_nodos.get(i);
+                }
+            }
+            jcb_agregarFlecha_partida.setSelectedItem(part);
+            jcb_agregarFlecha_partida.setSelectedItem(dest);
+            jd_modificarFlechas.pack();
+            jd_modificarFlechas.setVisible(true);
+        }else{
+            jl_modificarPlaneta_titulo.setText("MODIFICAR PLANETA");
+            jTF_agregarNodo_nombre.setText(ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getNombre());
+            jl_agregarPlaneta_icon.setIcon(ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFoto());
+            jd_modificarPlanetas.pack();
+            jd_modificarPlanetas.setVisible(true);
+        } 
+    }//GEN-LAST:event_jmi_modificarActionPerformed
+
+    private void jmi_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_eliminarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jmi_eliminarActionPerformed
 
     /**
      * @param args the command line arguments

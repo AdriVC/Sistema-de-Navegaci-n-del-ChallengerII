@@ -64,6 +64,10 @@ public class Nodo {
         this.flechas_salientes.remove(pos);
     }
     
+    public void deleteFlecha(Flecha flecha){
+        this.flechas_salientes.remove(flecha);
+    }
+    
     public void setFlecha(int pos, Flecha nuevo){
         this.flechas_salientes.set(pos, nuevo);
     }

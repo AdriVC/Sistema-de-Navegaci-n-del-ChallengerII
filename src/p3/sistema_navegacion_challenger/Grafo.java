@@ -50,6 +50,11 @@ public class Grafo {
             JOptionPane.showMessageDialog(null, "flecha no se pudo crear porque uno de los nodos no existe");
     }
     
+    public void deleteFlecha(Flecha flecha){
+        if(flecha != null)
+            flecha.destino.deleteFlecha(flecha);
+    }
+    
     public Nodo getHead(int pos){
         return head;
     }
