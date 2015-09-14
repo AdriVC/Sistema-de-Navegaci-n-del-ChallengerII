@@ -685,8 +685,8 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jmi_modificarActionPerformed
 
     private void jmi_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_eliminarActionPerformed
+        int seleccion = JOptionPane.showConfirmDialog(JF_visitaMapas, "Esta seguro que desea eliminar este elemento?");
         if (jt_flechasExistentes.getSelectedRow() >= 0) {
-            int seleccion = JOptionPane.showConfirmDialog(JF_visitaMapas, "Esta seguro que desea eliminar esta flecha?");
             if (seleccion == JOptionPane.YES_OPTION) {
                 String partida = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 0);
                 String destino = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 1);
@@ -699,9 +699,12 @@ public class Main_Navegacion extends javax.swing.JFrame {
                 }
             }
         } else {
-
+            if(seleccion == JOptionPane.YES_OPTION){
+                ruta_actual.deleteNodo(jt_planetasExistentes.getSelectedRow());
+            }
         }
         reload_datos();
+        JOptionPane.showMessageDialog(JF_visitaMapas, "Elemento eliminado exitosamente");
     }//GEN-LAST:event_jmi_eliminarActionPerformed
 
     /**
