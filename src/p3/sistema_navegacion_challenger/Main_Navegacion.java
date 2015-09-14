@@ -649,18 +649,20 @@ public class Main_Navegacion extends javax.swing.JFrame {
             jl_modificarFlechas_titulo.setText("MODIFICAR FLECHA");
             String partida = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 0);
             String destino = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 1);
+            Flecha cambio= null;
             Nodo part = null;
-            Nodo dest = null;
             for (int i = 0; i < ruta_actual.lista_nodos.size(); i++) {
-                if (ruta_actual.lista_nodos.get(i).getNombre().equals(partida)) {
-                    part = ruta_actual.lista_nodos.get(i);
-                }
-                if (ruta_actual.lista_nodos.get(i).getNombre().equals(destino)) {
-                    dest = ruta_actual.lista_nodos.get(i);
+                for (int j = 0; j < ruta_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
+                    if (ruta_actual.lista_nodos.get(i).getNombre().equals(partida) && ruta_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
+                        part = ruta_actual.lista_nodos.get(i);
+                        cambio = ruta_actual.lista_nodos.get(i).flechas_salientes.get(j);
+                    }
                 }
             }
             jcb_agregarFlecha_partida.setSelectedItem(part);
-            jcb_agregarFlecha_partida.setSelectedItem(dest);
+            jcb_agregarFlecha_destino.setSelectedItem(cambio.getDestino());
+            jsp_agregarFlecha_peso.setValue(cambio.getPeso());
+            
             jd_modificarFlechas.pack();
             jd_modificarFlechas.setVisible(true);
         }else{
