@@ -537,6 +537,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         if(ruta_actual != null){
             jb_editorRutas.setEnabled(true);
         }
+        reload_datos();
     }//GEN-LAST:event_jb_abrirRutaMouseClicked
 
     private void jl_agregarPlaneta_openFotoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jl_agregarPlaneta_openFotoMouseClicked
@@ -546,8 +547,6 @@ public class Main_Navegacion extends javax.swing.JFrame {
         if (seleccion == JFileChooser.APPROVE_OPTION) {
             path_imagen = jfc_abrirFoto.getSelectedFile().getPath();
             jl_agregarPlaneta_icon.setIcon(new ImageIcon(path_imagen));
-        } else if (seleccion == JFileChooser.CANCEL_OPTION) {
-            JOptionPane.showMessageDialog(JF_visitaMapas, "Cancelado");
         }
     }//GEN-LAST:event_jl_agregarPlaneta_openFotoMouseClicked
 
@@ -596,7 +595,6 @@ public class Main_Navegacion extends javax.swing.JFrame {
                     ruta_actual.agregarNodo(new Nodo(jTF_agregarNodo_nombre.getText(), path));
                     jTF_agregarNodo_nombre.setText("");
                     jl_agregarPlaneta_icon.setIcon(null);
-                    reload_datos();
                     jd_modificarPlanetas.dispose();
                     
                 } else {
@@ -606,18 +604,11 @@ public class Main_Navegacion extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
             }
         } else { //modificar
-            //System.out.println("path_imagen:" + path_imagen);
             String[] prueba_path = path_imagen.split("/");
             if (!jTF_agregarNodo_nombre.getText().equals("") && prueba_path[prueba_path.length - 2].equals("Sprites")) {
                 String path = "./Resources/Sprites/" + prueba_path[prueba_path.length - 1];
-//                System.out.println(jt_planetasExistentes.getSelectedRow());
-//                System.out.println("planeta que se cambio: " + ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()));
-//                System.out.println("ruta cambio: " + path);
                 ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setNombre(jTF_agregarNodo_nombre.getText());
-                ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setFoto(path);
-                reload_datos();
-                //System.out.println("ruta cambiada: " +ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFotoPath());
-                
+                ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setFoto(path); 
                 jTF_agregarNodo_nombre.setText("");
                 jl_agregarPlaneta_icon.setIcon(null);
                 jd_modificarPlanetas.dispose();
@@ -626,6 +617,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
             }
             
         }
+        reload_datos();
     }//GEN-LAST:event_jb_planeta_guardarCambiosMouseClicked
 
     private void jb_flechas_guardarCambiosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_flechas_guardarCambiosMouseClicked
@@ -633,28 +625,23 @@ public class Main_Navegacion extends javax.swing.JFrame {
             if (!jcb_agregarFlecha_partida.getSelectedItem().equals("--") && !jcb_agregarFlecha_destino.getSelectedItem().equals("--")) {
                 ruta_actual.agregarFlecha(((Nodo) jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo) jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int) jsp_agregarFlecha_peso.getValue());
                 jsp_agregarFlecha_peso.setValue(0);
-                reload_datos();
                 jd_modificarFlechas.dispose();
             } else {
                 JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
             }
         }else{ //modificar
             if (!jcb_agregarFlecha_partida.getSelectedItem().equals("--") && !jcb_agregarFlecha_destino.getSelectedItem().equals("--")) {
-                Flecha cambio = null;
                 String partida = (String)jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 0);
                 String destino = (String)jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 1);
                 for (int i = 0; i < ruta_actual.lista_nodos.size(); i++) {
                     for (int j = 0; j < ruta_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
                         if (ruta_actual.lista_nodos.get(i).getNombre().equals(partida) && ruta_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
-                            cambio = ruta_actual.lista_nodos.get(i).flechas_salientes.get(j);
                             ruta_actual.lista_nodos.get(i).deleteFlecha(j);
                         }
                     }
                 }
-                //ruta_actual.deleteFlecha(cambio);
                 ruta_actual.agregarFlecha(((Nodo) jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo) jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int) jsp_agregarFlecha_peso.getValue());
                 jsp_agregarFlecha_peso.setValue(0);
-                reload_datos();
                 jd_modificarFlechas.dispose();
                 
             } else {
@@ -698,7 +685,26 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jmi_modificarActionPerformed
 
     private void jmi_eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_eliminarActionPerformed
-        // TODO add your handling code here:
+        int seleccion = JOptionPane.showConfirmDialog(JF_visitaMapas, "Esta seguro que desea eliminar este elemento?");
+        if (jt_flechasExistentes.getSelectedRow() >= 0) {
+            if (seleccion == JOptionPane.YES_OPTION) {
+                String partida = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 0);
+                String destino = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 1);
+                for (int i = 0; i < ruta_actual.lista_nodos.size(); i++) {
+                    for (int j = 0; j < ruta_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
+                        if (ruta_actual.lista_nodos.get(i).getNombre().equals(partida) && ruta_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
+                            ruta_actual.lista_nodos.get(i).deleteFlecha(j);
+                        }
+                    }
+                }
+            }
+        } else {
+            if(seleccion == JOptionPane.YES_OPTION){
+                ruta_actual.deleteNodo(jt_planetasExistentes.getSelectedRow());
+            }
+        }
+        reload_datos();
+        JOptionPane.showMessageDialog(JF_visitaMapas, "Elemento eliminado exitosamente");
     }//GEN-LAST:event_jmi_eliminarActionPerformed
 
     /**
