@@ -65,6 +65,7 @@ public class Nodo {
     }
     
     public void deleteFlecha(Flecha flecha){
+        
         this.flechas_salientes.remove(flecha);
     }
     
