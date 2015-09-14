@@ -566,7 +566,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jb_agregarFlecha_nuevoMouseClicked
 
     private void jb_visitaMapas_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_visitaMapas_cerrarMouseClicked
-        JF_visitaMapas.dispose();
+        JF_visitaMapas.setVisible(false);
     }//GEN-LAST:event_jb_visitaMapas_cerrarMouseClicked
 
     private void jt_flechasExistentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_flechasExistentesMouseClicked
@@ -606,15 +606,18 @@ public class Main_Navegacion extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
             }
         } else { //modificar
+            //System.out.println("path_imagen:" + path_imagen);
             String[] prueba_path = path_imagen.split("/");
             if (!jTF_agregarNodo_nombre.getText().equals("") && prueba_path[prueba_path.length - 2].equals("Sprites")) {
                 String path = "./Resources/Sprites/" + prueba_path[prueba_path.length - 1];
-                System.out.println(jt_planetasExistentes.getSelectedRow());
-                System.out.println("planeta que se cambio: " + ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()));
+//                System.out.println(jt_planetasExistentes.getSelectedRow());
+//                System.out.println("planeta que se cambio: " + ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()));
+//                System.out.println("ruta cambio: " + path);
                 ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setNombre(jTF_agregarNodo_nombre.getText());
                 ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setFoto(path);
-                System.out.println("ruta cambiada: " +ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFotoPath());
                 reload_datos();
+                //System.out.println("ruta cambiada: " +ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFotoPath());
+                
                 jTF_agregarNodo_nombre.setText("");
                 jl_agregarPlaneta_icon.setIcon(null);
                 jd_modificarPlanetas.dispose();
@@ -734,12 +737,14 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }
     
     public void reload_datos(){
-        Background grafica = null;
-        grafica = new Background("./Resources/cuadricula_mapa.png",ruta_actual.lista_nodos);
-        grafica.setVisible(true);
-        //grafica.repaint();
+        //System.out.println("entra a reload_datos");
+        //Background grafica = null;
+        Background grafica = new Background("./Resources/cuadricula_mapa.png",ruta_actual.lista_nodos);
+        //grafica.setVisible(true);
         ruta_actual.lista_nodos = grafica.getLista();
         JF_visitaMapas.getContentPane().add(grafica);
+        grafica.repaint();
+        //JF_visitaMapas.getContentPane().add(new Background("./Resources/cuadricula_mapa.png",ruta_actual.lista_nodos));
         
         //tabla planetas
         DefaultTableModel modelo_planetas = (DefaultTableModel)jt_planetasExistentes.getModel();
@@ -849,7 +854,7 @@ class Background extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        System.out.println("reload:");
+        //System.out.println("background:");
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -869,12 +874,10 @@ class Background extends JPanel {
         for (int i = 0; i < lista_nodos.size(); i++) {
             //JLabel icono_nodo = new JLabel(new ImageIcon(lista_nodos.get(i).getFotoPath()));
             //icono_nodo.setSize(200, 200);
-            System.out.println(lista_nodos.get(i).getFotoPath());
+            //System.out.println(lista_nodos.get(i).getFotoPath());
             g.drawImage(Toolkit.getDefaultToolkit().getImage(lista_nodos.get(i).getFotoPath()), lista_nodos.get(i).getPosicion().x, lista_nodos.get(i).getPosicion().y, this);
         }
-        System.out.println();
-        g.dispose();
-        g2.dispose();
+        //System.out.println();
     }
     
     public Point coordenadas_graficar(int pos){

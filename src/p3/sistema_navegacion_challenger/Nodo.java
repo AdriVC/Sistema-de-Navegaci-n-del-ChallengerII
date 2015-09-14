@@ -49,6 +49,7 @@ public class Nodo {
     }
 
     public void setFoto(String path_foto) {
+        this.path = path_foto;
         this.foto = new ImageIcon(path_foto);
     }
     
