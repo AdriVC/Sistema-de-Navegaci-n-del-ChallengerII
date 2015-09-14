@@ -21,7 +21,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -103,7 +102,6 @@ public class Main_Navegacion extends javax.swing.JFrame {
         JF_visitaMapas.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         JF_visitaMapas.setBackground(new java.awt.Color(255, 255, 255));
         JF_visitaMapas.setForeground(java.awt.Color.black);
-        JF_visitaMapas.setMaximumSize(new java.awt.Dimension(2147483647, 600));
         JF_visitaMapas.setMinimumSize(new java.awt.Dimension(0, 600));
 
         jLabel6.setText("PLANETAS EXISTENTES");
@@ -612,12 +610,13 @@ public class Main_Navegacion extends javax.swing.JFrame {
             if (!jTF_agregarNodo_nombre.getText().equals("") && prueba_path[prueba_path.length - 2].equals("Sprites")) {
                 String path = "./Resources/Sprites/" + prueba_path[prueba_path.length - 1];
                 System.out.println(jt_planetasExistentes.getSelectedRow());
-                System.out.println(ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()));
+                System.out.println("planeta que se cambio: " + ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()));
                 ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setNombre(jTF_agregarNodo_nombre.getText());
                 ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setFoto(path);
+                System.out.println("ruta cambiada: " +ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFotoPath());
+                reload_datos();
                 jTF_agregarNodo_nombre.setText("");
                 jl_agregarPlaneta_icon.setIcon(null);
-                reload_datos();
                 jd_modificarPlanetas.dispose();
             } else {
                 JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
@@ -689,6 +688,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
             jl_modificarPlaneta_titulo.setText("MODIFICAR PLANETA");
             jTF_agregarNodo_nombre.setText(ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getNombre());
             jl_agregarPlaneta_icon.setIcon(ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFoto());
+            path_imagen = ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFotoPath();
             jd_modificarPlanetas.pack();
             jd_modificarPlanetas.setVisible(true);
         } 
@@ -734,8 +734,10 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }
     
     public void reload_datos(){
-        // grafica
-        Background grafica = new Background("./Resources/cuadricula_mapa.png",ruta_actual.lista_nodos);
+        Background grafica = null;
+        grafica = new Background("./Resources/cuadricula_mapa.png",ruta_actual.lista_nodos);
+        grafica.setVisible(true);
+        //grafica.repaint();
         ruta_actual.lista_nodos = grafica.getLista();
         JF_visitaMapas.getContentPane().add(grafica);
         
@@ -779,8 +781,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         }
         jcb_agregarFlecha_destino.setModel(cb_planetas_destino);
         
-        //repaint
-        JF_visitaMapas.repaint();
+        //JF_visitaMapas.repaint();
         JF_visitaMapas.pack();
     }
 
@@ -842,11 +843,13 @@ class Background extends JPanel {
         this.path = path;
         this.setLocation(0, 0);
         this.setSize(600,600);
+        this.lista_nodos = new ArrayList();
         this.lista_nodos = lista_nodos;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
+        System.out.println("reload:");
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -864,10 +867,12 @@ class Background extends JPanel {
             }
         }
         for (int i = 0; i < lista_nodos.size(); i++) {
-            JLabel icono_nodo = new JLabel(new ImageIcon(lista_nodos.get(i).getFotoPath()));
-            icono_nodo.setSize(200, 200);
+            //JLabel icono_nodo = new JLabel(new ImageIcon(lista_nodos.get(i).getFotoPath()));
+            //icono_nodo.setSize(200, 200);
+            System.out.println(lista_nodos.get(i).getFotoPath());
             g.drawImage(Toolkit.getDefaultToolkit().getImage(lista_nodos.get(i).getFotoPath()), lista_nodos.get(i).getPosicion().x, lista_nodos.get(i).getPosicion().y, this);
         }
+        System.out.println();
         g.dispose();
         g2.dispose();
     }
