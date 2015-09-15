@@ -59,7 +59,7 @@ public class Grafo {
             System.out.println("costos:");
             this.printArray(costos);
             
-            for (int i = 0; i < nodos.length-1; i++) {
+            for (int i = 0; i < nodos.length; i++) {
                 Nodo temp = null;
                 int indexTemp =-1;
                 int costoMin = (int)Double.POSITIVE_INFINITY;
@@ -71,7 +71,9 @@ public class Grafo {
                     }
                 }
                 nodos[indexTemp] = null;
+                System.out.println("Recorrido de costos:");
                 for (int j = 0; j < nodos.length; j++) {
+                    System.out.print(j + ": ");
                     if(nodos[j] != null){
                         int suma = -1;
                         if (costos[indexTemp] == (int)Double.POSITIVE_INFINITY || temp.getPesoFlecha(nodos[j]) == -1) {
@@ -85,6 +87,7 @@ public class Grafo {
                         }
                     }
                 }
+                System.out.println("");
             }
             
             System.out.println("nodos:");

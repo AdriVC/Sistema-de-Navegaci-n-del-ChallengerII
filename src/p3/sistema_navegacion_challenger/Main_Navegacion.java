@@ -6,17 +6,24 @@
 package p3.sistema_navegacion_challenger;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -73,10 +80,8 @@ public class Main_Navegacion extends javax.swing.JFrame {
         }
         if(mapa_actual != null){
             planeta_actual = mapa_actual.lista_nodos.get(0);
-            jb_editorRutas.setEnabled(true);
-            jb_calcularRuta.setEnabled(true);
-            chb_activarWarp.setEnabled(true);
-            jta_logRuta.setText("Bienvenido al Sistema de Navegacion del Challenger II.\nPosicion actual:planeta " + planeta_actual);
+            jb_editorRutas.setEnabled(true); 
+            jta_logRuta.setText("Bienvenido al Sistema de Navegacion del Challenger II.\nPosicion actual:planeta " + planeta_actual + "\nActualize su mapa para desbloquear la navegacion");
         }else{
             jta_logRuta.setText("Bienvenido al Sistema de Navegacion del Challenger II.\nError al cargar el mapa, asegurese que este en el archivo");
         }
@@ -454,7 +459,6 @@ public class Main_Navegacion extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
         jl_ventana.setText("Pantalla Principal de Navegacion");
         jl_ventana.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -506,49 +510,48 @@ public class Main_Navegacion extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jl_ventana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jb_calcularRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jb_editorRutas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(19, 19, 19)
+                                .addComponent(jl_Go, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addComponent(jl_ventana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(12, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jb_editorRutas, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jb_calcularRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
+                                .addGap(8, 8, 8)
                                 .addComponent(chb_activarWarp)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jl_Go, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3)))
+                .addGap(18, 18, 18)
+                .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addComponent(jl_ventana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jb_calcularRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chb_activarWarp))
-                    .addComponent(jl_Go, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jb_editorRutas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(jl_ventana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jb_editorRutas, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jb_calcularRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(chb_activarWarp)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jl_Go, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(19, 19, 19))
         );
 
         pack();
@@ -561,7 +564,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
 
     private void jb_editorRutasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_editorRutasMouseClicked
         if(jb_editorRutas.isEnabled()){
-            reload_datos();
+            //reload_datos();
             JF_visitaMapas.pack();
             JF_visitaMapas.setVisible(true);
         }
@@ -593,7 +596,10 @@ public class Main_Navegacion extends javax.swing.JFrame {
 
     private void jb_visitaMapas_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_visitaMapas_cerrarMouseClicked
         JF_visitaMapas.setVisible(false);
-        jta_logRuta.append("\nMapa actualizado.");
+        jb_calcularRuta.setEnabled(true);
+        chb_activarWarp.setEnabled(true);
+        jl_MapaActual.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("./Resources/mapa_mini.png").getScaledInstance(415, 415, 0)));
+        jta_logRuta.append("\nMapa actualizado\nCalculo de rutas disponible");
     }//GEN-LAST:event_jb_visitaMapas_cerrarMouseClicked
 
     private void jt_flechasExistentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_flechasExistentesMouseClicked
@@ -646,6 +652,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
             
         }
         reload_datos();
+        JF_visitaMapas.setVisible(true);
     }//GEN-LAST:event_jb_planeta_guardarCambiosMouseClicked
 
     private void jb_flechas_guardarCambiosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_flechas_guardarCambiosMouseClicked
@@ -677,7 +684,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
             }
         }
         reload_datos();
-        
+        JF_visitaMapas.setVisible(true);
     }//GEN-LAST:event_jb_flechas_guardarCambiosMouseClicked
 
     private void jmi_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_modificarActionPerformed
@@ -840,6 +847,25 @@ public class Main_Navegacion extends javax.swing.JFrame {
         
         //JF_visitaMapas.repaint();
         JF_visitaMapas.pack();
+        JF_visitaMapas.setVisible(true);
+        JF_visitaMapas.setVisible(false);
+        makePanelImage(grafica);
+    }
+    
+    private void makePanelImage(Component panel)
+    {
+        Dimension size = panel.getSize();
+        BufferedImage image = new BufferedImage(size.height, size.width, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = image.createGraphics();
+        panel.paint(g2);
+        try
+        {
+            ImageIO.write(image, "png", new File("./Resources/mapa_mini.png"));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
