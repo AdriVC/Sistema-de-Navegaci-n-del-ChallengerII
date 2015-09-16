@@ -756,8 +756,8 @@ public class Main_Navegacion extends javax.swing.JFrame {
                     destino = mapa_actual.lista_nodos.get(i);
                 }
             }
-            int costo = mapa_actual.calcularCostoRutaOptima(planeta_actual, destino, false);
-            jta_logRuta.append(mapa_actual.printRutaOp() + "\nTiempo total = " +  costo + " años luz");
+            mapa_actual.calcularCostoRutaOptima(planeta_actual, destino);
+            jta_logRuta.append(mapa_actual.printRutaOp(chb_activarWarp.isSelected()));
             
         }
     }//GEN-LAST:event_jb_calcularRutaMouseClicked
