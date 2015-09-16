@@ -530,30 +530,27 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="jl_ventana" min="-2" max="-2" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="jb_calcularRuta" min="-2" pref="136" max="-2" attributes="0"/>
-                              <Component id="jb_editorRutas" max="32767" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
-                              <Component id="jl_Go" min="-2" pref="82" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
-                              <Component id="chb_activarWarp" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" max="32767" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="jl_ventana" max="32767" attributes="0"/>
+                  <Component id="jl_MapaActual" min="-2" pref="495" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jl_MapaActual" min="-2" pref="425" max="-2" attributes="0"/>
-              <EmptySpace pref="14" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jb_editorRutas" max="32767" attributes="0"/>
+                          <Component id="jb_calcularRuta" pref="170" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jl_Go" min="-2" pref="82" max="-2" attributes="0"/>
+                          <Component id="chb_activarWarp" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Component id="jScrollPane3" min="-2" pref="400" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="23" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -561,26 +558,30 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jl_MapaActual" max="32767" attributes="0"/>
-                  <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="jl_ventana" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jl_MapaActual" min="-2" pref="495" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="jScrollPane3" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
                               <Component id="jb_editorRutas" min="-2" pref="49" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="jb_calcularRuta" min="-2" pref="57" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="chb_activarWarp" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="14" max="32767" attributes="0"/>
-                              <Component id="jl_Go" min="-2" pref="77" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane3" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="jl_Go" min="-2" pref="77" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                              <Component id="chb_activarWarp" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+              <EmptySpace min="0" pref="23" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -612,6 +613,9 @@
           <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
             <BevelBorder/>
           </Border>
+        </Property>
+        <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[425, 425]"/>
         </Property>
       </Properties>
     </Component>
