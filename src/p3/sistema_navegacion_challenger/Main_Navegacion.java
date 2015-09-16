@@ -11,16 +11,13 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
@@ -54,6 +51,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         jb_editorRutas.setEnabled(false);
         jb_calcularRuta.setEnabled(false);
         chb_activarWarp.setEnabled(false);
+        destino_actual = null;
         agregar = true;
 
         try {
@@ -559,7 +557,13 @@ public class Main_Navegacion extends javax.swing.JFrame {
 
     private void jl_GoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jl_GoMouseClicked
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this, " entra a simulacion");
+        if (destino_actual == null) {
+            jta_logRuta.append("\n\nDestino no seleccionado, favor cree una nueva ruta.");
+        }else{
+            jta_logRuta.append("\nentra a simulacion");
+            planeta_actual = destino_actual;
+            destino_actual = null;
+        }
     }//GEN-LAST:event_jl_GoMouseClicked
 
     private void jb_editorRutasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_editorRutasMouseClicked
@@ -592,7 +596,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jb_agregarPlaneta_nuevoMouseClicked
 
     private void jb_agregarFlecha_nuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_agregarFlecha_nuevoMouseClicked
-        if (jb_aregarFlecha_nuevo.isEnabled()) {
+        if (jb_agregarFlecha_nuevo.isEnabled()) {
             jsp_agregarFlecha_peso.setValue(0);
             agregar = true;
             jl_modificarFlechas_titulo.setText("AGREGAR NUEVA FLECHA:");
@@ -765,9 +769,12 @@ public class Main_Navegacion extends javax.swing.JFrame {
                     destino = mapa_actual.lista_nodos.get(i);
                 }
             }
-            mapa_actual.calcularCostoRutaOptima(planeta_actual, destino);
-            jta_logRuta.append(mapa_actual.printRutaOp(chb_activarWarp.isSelected()));
-            
+            if(destino != null){
+               destino_actual = destino;
+               mapa_actual.calcularCostoRutaOptima(planeta_actual, destino);
+               jta_logRuta.append(mapa_actual.printRutaOp(chb_activarWarp.isSelected()));
+               
+            }
         }
     }//GEN-LAST:event_jb_calcularRutaMouseClicked
 
@@ -928,6 +935,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
     String path_imagen;
     boolean agregar;
     Nodo planeta_actual;
+    Nodo destino_actual;
     Flecha flecha_seleccionada;
 }
 
