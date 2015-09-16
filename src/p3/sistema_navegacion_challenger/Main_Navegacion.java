@@ -569,6 +569,8 @@ public class Main_Navegacion extends javax.swing.JFrame {
             jta_logRuta.append("\n\nDestino no seleccionado, favor cree una nueva ruta.");
         }else{
             jta_logRuta.append("\nentra a simulacion");
+            
+            
             planeta_actual = destino_actual;
             destino_actual = null;
             jta_logRuta.append("\n\nSu posicion ha sido actualizada\nPosicion actual:planeta " + planeta_actual);
@@ -760,7 +762,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
             if(seleccion == JOptionPane.YES_OPTION){
                 mapa_actual.deleteNodo(jt_planetasExistentes.getSelectedRow());
             }
-        }
+    }
         reload_datos();
         JF_visitaMapas.setVisible(true);
     }//GEN-LAST:event_jmi_eliminarActionPerformed

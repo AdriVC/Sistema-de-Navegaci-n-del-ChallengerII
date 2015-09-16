@@ -10,6 +10,7 @@ public class Grafo {
     ArrayList <Nodo> lista_nodos;
 
     ArrayList <Nodo> ruta_optima;
+    int[] pesos;
     int costo_ruta_op;
 
     public Grafo(String nombre) {
@@ -105,12 +106,12 @@ public class Grafo {
     public String printRutaOp(boolean warpSpeed){
         String texto = "";
         if (!ruta_optima.isEmpty()) {
-            int[] pesos = new int[ruta_optima.size()-1];
+            pesos = new int[ruta_optima.size()-1];
             for (int i = 0; i < pesos.length; i++) {
                 pesos[i] = ruta_optima.get(i).getPesoFlecha(ruta_optima.get(i + 1));
             }
             if (warpSpeed) {
-                pesos = warpSpeed(pesos);
+                pesos = warpSpeed();
             }
             texto += "\n\nNUEVA RUTA:\nPartida: " + ruta_optima.get(0) + "\nDestino: " + ruta_optima.get(ruta_optima.size()-1) + "\nWarp: "+ (warpSpeed?"activado":"desactivado") +"\nRuta optima:\n";
             for (int i = 0; i < ruta_optima.size() - 1; i++) {
@@ -121,7 +122,7 @@ public class Grafo {
         return texto;
     }
     
-    private int[] warpSpeed(int[] pesos){
+    private int[] warpSpeed(){
         int[] ahorros = pesos;
         for (int i = 0; i < 2; i++) {
             int pos = -1,max = 0;
@@ -135,6 +136,29 @@ public class Grafo {
             ahorros[pos] = 0;
         }
         return ahorros;
+    }
+    
+    public String[] hiloSimulacion(){
+        String[] paths_sim = new String[ruta_optima.size()*2-1];
+        int cont =0;
+        for (int i = 0; i < ruta_optima.size(); i++) {
+            if (i%2 == 0) {
+                String[] path_split = ruta_optima.get(i).getFotoPath().split("/");
+                paths_sim[i] = "./Resources/Hilo/" + path_split[path_split.length -1];
+                System.out.println("path_sim["+i+"]: " + paths_sim[i]);
+            }else{
+                if (i != lista_nodos.size()-1) {
+                    if (pesos[cont] > 0) {
+                        paths_sim[i] = "./Resources/Hilo/velocidad_normal.png";
+                    }else{
+                        paths_sim[i] = "./Resources/Hilo/velocidad_luz.png";
+                    }
+                }else{
+                    paths_sim[i] = "./Resources/Hilo/vista_ventana.png";
+                }
+            }
+        }
+        return paths_sim;
     }
     
     public ArrayList<Nodo> getRutaOptima(){
