@@ -60,3 +60,62 @@ Warp: desactivado
 Ruta optima:
 Tierra--10-->Pluto
 Tiempo total = 10 años luz
+
+------REGISTRO NUEVO------
+Bienvenido al Sistema de Navegacion del Challenger II.
+Posicion actual:planeta Tierra
+Actualize su mapa para desbloquear la navegacion
+Mapa actualizado
+Calculo de rutas disponible
+
+------REGISTRO NUEVO------
+Bienvenido al Sistema de Navegacion del Challenger II.
+Posicion actual:planeta Tierra
+Actualize su mapa para desbloquear la navegacion
+Mapa actualizado
+Calculo de rutas disponible
+
+NUEVA RUTA:
+Partida: Tierra
+Destino: Mercurio
+Warp: desactivado
+Ruta optima:
+Tierra--30-->Saturno--20-->Mercurio
+Tiempo total = 50 años luz
+
+------REGISTRO NUEVO------
+Bienvenido al Sistema de Navegacion del Challenger II.
+Posicion actual:planeta Tierra
+Actualize su mapa para desbloquear la navegacion
+Mapa actualizado
+Calculo de rutas disponible
+
+------REGISTRO NUEVO------
+Bienvenido al Sistema de Navegacion del Challenger II.
+Posicion actual:planeta Tierra
+Actualize su mapa para desbloquear la navegacion
+Mapa actualizado
+Calculo de rutas disponible
+
+------REGISTRO NUEVO------
+Bienvenido al Sistema de Navegacion del Challenger II.
+Posicion actual:planeta Tierra
+Actualize su mapa para desbloquear la navegacion
+Mapa actualizado
+Calculo de rutas disponible
+
+NUEVA RUTA:
+Partida: Tierra
+Destino: Saturno
+Warp: desactivado
+Ruta optima:
+Tierra--30-->Saturno
+Tiempo total = 30 años luz
+
+NUEVA RUTA:
+Partida: Tierra
+Destino: Jupiter
+Warp: activado
+Ruta optima:
+Tierra--0-->Saturno--0-->Mercurio--10-->Jupiter
+Tiempo total = 10 años luz

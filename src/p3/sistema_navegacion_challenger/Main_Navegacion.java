@@ -789,7 +789,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        int seleccion = JOptionPane.showConfirmDialog(this, "Desea guardar los registros del Challenger?");
+        int seleccion = JOptionPane.showConfirmDialog(this, "Desea guardar los registros del Challenger y los cambios al mapa?");
         if (seleccion == JOptionPane.YES_OPTION) {
             FileWriter fw = null;
             BufferedWriter bw = null;
@@ -797,6 +797,43 @@ public class Main_Navegacion extends javax.swing.JFrame {
                 fw = new FileWriter("./Resources/Registros/registroChallenger.txt", true); // es un constructor sobre cargado, si se incluye el booleano en true, entonces el texto lo agrega al final del texto que ya existe. 
                 bw = new BufferedWriter(fw);
                 bw.write("\n\n------REGISTRO NUEVO------\n" + jta_logRuta.getText());
+                bw.flush(); // si el archivo no existe, lo crea
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    bw.close();
+                    fw.close();
+                } catch (IOException ex) {
+                }
+            }
+            fw = null;
+            bw = null;
+            try {
+                fw = new FileWriter("./Resources/Registros/"+ mapa_actual.getNombre() +".txt", false); // es un constructor sobre cargado, si se incluye el booleano en true, entonces el texto lo agrega al final del texto que ya existe. 
+                bw = new BufferedWriter(fw);
+                bw.write(mapa_actual.getNombre() + "::");
+                for (int i = 0; i < mapa_actual.lista_nodos.size(); i++) {
+                    if (i != mapa_actual.lista_nodos.size()-1) {
+                        bw.write(mapa_actual.lista_nodos.get(i).getNombre() + "," + mapa_actual.lista_nodos.get(i).getFotoPath() + "|");
+                    }else{
+                        bw.write(mapa_actual.lista_nodos.get(i).getNombre() + "," + mapa_actual.lista_nodos.get(i).getFotoPath());
+                    }
+                }
+                bw.write("::");
+                for (int i = 0; i < mapa_actual.lista_nodos.size(); i++) {
+                    for (int j = 0; j < mapa_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
+                        if(i != (mapa_actual.lista_nodos.size()-1) || j != (mapa_actual.lista_nodos.get(i).flechas_salientes.size()-1)){
+                            bw.write(mapa_actual.lista_nodos.get(i).getNombre() + "," + 
+                                    mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre() + "," + 
+                                    mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getPeso() + "|");
+                        }else{
+                            bw.write(mapa_actual.lista_nodos.get(i).getNombre() + "," +
+                                    mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre() + "," + 
+                                    mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getPeso());
+                        }
+                    }
+                }
                 bw.flush(); // si el archivo no existe, lo crea
             } catch (IOException e) {
                 e.printStackTrace();
