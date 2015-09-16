@@ -570,13 +570,13 @@ public class Main_Navegacion extends javax.swing.JFrame {
         if (destino_actual == null) {
             jta_logRuta.append("\n\nDestino no seleccionado, favor cree una nueva ruta.");
         }else{
-            jta_logRuta.append("\nentra a simulacion");
+            jta_logRuta.append("\n\nViaje Iniciado.. en ruta:\n");
             String [] paths = mapa_actual.hiloSimulacion();
             SimpleThread simulacion = new SimpleThread("sim");
             simulacion.run(paths);
             planeta_actual = destino_actual;
             destino_actual = null;
-            jta_logRuta.append("\n\nSu posicion ha sido actualizada\nPosicion actual:planeta " + planeta_actual);
+            jta_logRuta.append("\nSu posicion ha sido actualizada\nPosicion actual:planeta " + planeta_actual);
         }
     }//GEN-LAST:event_jl_GoMouseClicked
 
@@ -1036,17 +1036,24 @@ public class Main_Navegacion extends javax.swing.JFrame {
 
         public void run(String[] lista) {
             for (int i = 0; i < lista.length; i++) {
-                System.out.println("run " + i);
-                //jl_ventana.setIcon(null);
-                jl_ventana.setIcon(new ImageIcon(lista[i]));
-                reload_datos();
+                //System.out.println("run " + i);
+                //jl_ventana.setIcon(new ImageIcon(lista[i]));
+                //reload_datos();
+                if (i != lista.length-1) {
+                    jta_logRuta.append("posicion actual: " + lista[i] + "\n");
+                }else{
+                    jta_logRuta.append(lista[i] + "\n");
+                }
+                
                 try {
-                    sleep(1000);
+                    sleep(100);
                 } catch (InterruptedException e) {
                 }
             }
         }
     }
+    
+}
 
     class Background extends JPanel {
 
@@ -1124,4 +1131,4 @@ public class Main_Navegacion extends javax.swing.JFrame {
             g2.drawString(Integer.toString(peso),(int)x4,(int)y4);
         }
     }
-}
+
