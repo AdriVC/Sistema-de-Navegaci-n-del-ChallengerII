@@ -169,48 +169,31 @@ public class ImageColumnTest2 {
    private JTable table = new JTable();
    private JScrollPane mainPane = new JScrollPane(table);
 
-   public ImageColumnTest2() throws IOException {
-      DefaultTableModel model = new DefaultTableModel(COL_NAMES, 0) {
-         @Override
-         public Class<?> getColumnClass(int column) {
-            if (getRowCount() > 0) {
-               Object value = getValueAt(0, column);
-               if (value != null) {
-                  return getValueAt(0, column).getClass();
-               }
-            }
+    public ImageColumnTest2() throws IOException {
+        DefaultTableModel model = new DefaultTableModel(COL_NAMES, 0) {
+            @Override
+            public Class<?> getColumnClass(int column) {
+                if (getRowCount() > 0) {
+                    Object value = getValueAt(0, column);
+                    if (value != null) {
+                        return getValueAt(0, column).getClass();
+                    }
+                }
 
-            return super.getColumnClass(column);
-         }
-      };
-      //URL url = new URL(IMAGE_SHEET_PATH);
-      //BufferedImage img = ImageIO.read(IMAGE_SHEET_PATH);
-//      int x1 = 15;  // sorry about the magic numbers
-//      img = img.getSubimage(x1, 0, img.getWidth() - 2 * x1, img.getHeight());
-//
-//      int y1 = 20 ;  // ditto!
-//      int w = img.getWidth() / COLS;
-//      int h = img.getHeight() / ROWS;
-//    for (int row = 0; row < ROWS; row++) {
-//         int y = (row * img.getHeight()) / ROWS;
+                return super.getColumnClass(column);
+            }
+        };
+
         for (int col = 0; col < COUNTRIES.length; col++) {
-//            int x = (col * img.getWidth()) / COLS;
-//            BufferedImage subImg = img.getSubimage(x, y, w, h);
-//
-//            subImg = subImg.getSubimage(x1, 0, subImg.getWidth() - 2 * x1, subImg.getHeight() - y1);
-            
-            //ImageIcon icon = new ImageIcon(subImg);
-            ImageIcon icon = new ImageIcon("./Resources/Sprites/p"+(col+1)+".png");
+            ImageIcon icon = new ImageIcon("./Resources/Sprites/p" + (col + 1) + ".png");
             String country = COUNTRIES[col];
             Object[] rowData = {country, icon};
             model.addRow(rowData);
         }
-//    }
 
-
-      table.setModel(model);
-      table.setRowHeight(((ImageIcon)model.getValueAt(0, 1)).getIconHeight());
-   }
+        table.setModel(model);
+        table.setRowHeight(((ImageIcon) model.getValueAt(0, 1)).getIconHeight());
+    }
 
    public JComponent getMainComponent() {
       return mainPane;

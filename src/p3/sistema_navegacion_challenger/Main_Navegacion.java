@@ -889,25 +889,39 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }
     
     public void reload_datos(){
-        //System.out.println("entra a reload_datos");
-        //Background grafica = null;
         Background grafica = new Background("./Resources/cuadricula_mapa.png",mapa_actual.lista_nodos);
-        //grafica.setVisible(true);
         mapa_actual.lista_nodos = grafica.getLista();
         JF_visitaMapas.getContentPane().add(grafica);
         grafica.repaint();
-        //JF_visitaMapas.getContentPane().add(new Background("./Resources/cuadricula_mapa.png",mapa_actual.lista_nodos));
         
         //tabla planetas
         DefaultTableModel modelo_planetas = (DefaultTableModel)jt_planetasExistentes.getModel();
         while(modelo_planetas.getRowCount() >0){
             modelo_planetas.removeRow(0);
         }
-        for(Nodo temp:mapa_actual.lista_nodos){
-            Object[] row = {temp.getNombre(), temp.getFoto()};
-            modelo_planetas.addRow(row);
+        
+        String[] col_names = {"Nombre","Icono"};
+        modelo_planetas = new DefaultTableModel(col_names,0){
+            @Override
+            public Class<?> getColumnClass(int column) {
+                if (getRowCount() > 0) {
+                    Object value = getValueAt(0, column);
+                    if (value != null) {
+                        return getValueAt(0, column).getClass();
+                    }
+                }
+
+                return super.getColumnClass(column);
+            }
+        };
+        for (Nodo temp:mapa_actual.lista_nodos) {
+            Object[] rowData = {temp.getNombre(), temp.getFoto()};
+            modelo_planetas.addRow(rowData);
         }
+
         jt_planetasExistentes.setModel(modelo_planetas);
+        jt_planetasExistentes.setRowHeight(((ImageIcon) modelo_planetas.getValueAt(0, 1)).getIconHeight());
+        
         
         //tabla flechas
         DefaultTableModel modelo_flechas = (DefaultTableModel)jt_flechasExistentes.getModel();
@@ -1014,98 +1028,100 @@ public class Main_Navegacion extends javax.swing.JFrame {
     Flecha flecha_seleccionada;
     static Main_Navegacion esto;
 
-class SimpleThread extends Thread {
-    public SimpleThread(String str) {
-        super(str);
-    }
-    public void run(String[] lista) {
-        for (int i = 0; i < lista.length; i++) {
-            System.out.println("run " + i );
-            jl_ventana.setIcon(null);
-            jl_ventana.setIcon(new ImageIcon(lista[i]));
-            esto.repaint();
-            esto.setVisible(false);
-            esto.setVisible(true);
-            try {
-                sleep(1000);
-            } catch (InterruptedException e) {}
+    class SimpleThread extends Thread {
+
+        public SimpleThread(String str) {
+            super(str);
         }
-    }
-}
 
-
-
-
-}
-
-class Background extends JPanel {
-    private String path;
-    ArrayList<Nodo> lista_nodos;
-
-    public Background(String path,ArrayList<Nodo> lista_nodos) {
-        this.path = path;
-        this.setLocation(0, 0);
-        this.setSize(600,600);
-        this.lista_nodos = new ArrayList();
-        this.lista_nodos = lista_nodos;
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        //System.out.println("background:");
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D)g;
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.drawImage(Toolkit.getDefaultToolkit().getImage(path),0,0,this);
-        for (int i = 0; i < lista_nodos.size(); i++) {
-            lista_nodos.get(i).setPosicion(coordenadas_graficar(i));
-        }
-        g.setColor(Color.white);
-        for (int i = 0; i < lista_nodos.size(); i++) {
-            Point cola = lista_nodos.get(i).getPosicion();
-            for (int j = 0; j < lista_nodos.get(i).flechas_salientes.size(); j++) {
-                Point cabeza = lista_nodos.get(i).flechas_salientes.get(j).getDestino().getPosicion();
-                g.drawLine(cola.x+15, cola.y+15, cabeza.x+15, cabeza.y+15);
-                drawArrowHead(g2, cabeza, cola, Color.white);
+        public void run(String[] lista) {
+            for (int i = 0; i < lista.length; i++) {
+                System.out.println("run " + i);
+                //jl_ventana.setIcon(null);
+                jl_ventana.setIcon(new ImageIcon(lista[i]));
+                reload_datos();
+                try {
+                    sleep(1000);
+                } catch (InterruptedException e) {
+                }
             }
         }
-        for (int i = 0; i < lista_nodos.size(); i++) {
-            //JLabel icono_nodo = new JLabel(new ImageIcon(lista_nodos.get(i).getFotoPath()));
-            //icono_nodo.setSize(200, 200);
-            //System.out.println(lista_nodos.get(i).getFotoPath());
-            g.drawImage(Toolkit.getDefaultToolkit().getImage(lista_nodos.get(i).getFotoPath()), lista_nodos.get(i).getPosicion().x, lista_nodos.get(i).getPosicion().y, this);
-        }
-        //System.out.println();
     }
-    
-    public Point coordenadas_graficar(int pos){
-        int x = (int)(225*Math.cos(Math.toRadians(360/lista_nodos.size()*(pos+1))));
-        int y = (int)(225*Math.sin(Math.toRadians(360/lista_nodos.size()*(pos+1))));
-        return new Point(x+285,y+285);
-    }
-    
-    public ArrayList<Nodo> getLista(){
-        return lista_nodos;
-    }
-    
-    private void drawArrowHead(Graphics2D g2, Point tip, Point tail, Color color){
-        double phi = Math.toRadians(35);
-        int barb = 15;
-        g2.setPaint(color);
-        double dy = tip.y - tail.y;
-        double dx = tip.x - tail.x;
-        double theta = Math.atan2(dy, dx);
-        //System.out.println("theta = " + Math.toDegrees(theta));
-        double x1, y1, x2, y2;
-        x1 = tip.x+15 - 20 * Math.cos(theta);
-        y1 = tip.y+15 - 20 * Math.sin(theta);
-        x2 = x1 - barb * Math.cos(theta+phi);
-        y2 = y1 - barb * Math.sin(theta+phi);
-        g2.draw(new Line2D.Double(x1, y1, x2, y2));
-        x2 = x1 - barb * Math.cos(theta-phi);
-        y2 = y1 - barb * Math.sin(theta-phi);
-        g2.draw(new Line2D.Double(x1, y1, x2, y2));
-    }
-    
-}
 
+    class Background extends JPanel {
+
+        private String path;
+        ArrayList<Nodo> lista_nodos;
+
+        public Background(String path, ArrayList<Nodo> lista_nodos) {
+            this.path = path;
+            this.setLocation(0, 0);
+            this.setSize(600, 600);
+            this.lista_nodos = new ArrayList();
+            this.lista_nodos = lista_nodos;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            //System.out.println("background:");
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.drawImage(Toolkit.getDefaultToolkit().getImage(path), 0, 0, this);
+            for (int i = 0; i < lista_nodos.size(); i++) {
+                lista_nodos.get(i).setPosicion(coordenadas_graficar(i));
+            }
+            g.setColor(Color.white);
+            for (int i = 0; i < lista_nodos.size(); i++) {
+                Point cola = lista_nodos.get(i).getPosicion();
+                for (int j = 0; j < lista_nodos.get(i).flechas_salientes.size(); j++) {
+                    Point cabeza = lista_nodos.get(i).flechas_salientes.get(j).getDestino().getPosicion();
+                    g.setColor(Color.white);
+                    g.drawLine(cola.x + 15, cola.y + 15, cabeza.x + 15, cabeza.y + 15);
+                    drawArrowHead(g2, cabeza, cola, Color.white, lista_nodos.get(i).flechas_salientes.get(j).getPeso());
+                }
+            }
+            for (int i = 0; i < lista_nodos.size(); i++) {
+//                double dy = lista_nodos.get(i).getPosicion().y + 300;
+//                double dx = lista_nodos.get(i).getPosicion().x + 300;
+//                double theta = Math.atan2(dy, dx);
+//                int posx = (int)(230 * Math.cos(theta));
+//                int posy = (int)(230 * Math.sin(theta));
+//                g.drawString(lista_nodos.get(i).getNombre(), posx, posy);
+                g.drawImage(Toolkit.getDefaultToolkit().getImage(lista_nodos.get(i).getFotoPath()), lista_nodos.get(i).getPosicion().x, lista_nodos.get(i).getPosicion().y, this);
+            }
+        }
+
+        public Point coordenadas_graficar(int pos) {
+            int x = (int) (225 * Math.cos(Math.toRadians(360 / lista_nodos.size() * (pos + 1))));
+            int y = (int) (225 * Math.sin(Math.toRadians(360 / lista_nodos.size() * (pos + 1))));
+            return new Point(x + 285, y + 285);
+        }
+
+        public ArrayList<Nodo> getLista() {
+            return lista_nodos;
+        }
+
+        private void drawArrowHead(Graphics2D g2, Point tip, Point tail, Color color, int peso) {
+            double phi = Math.toRadians(35);
+            int barb = 15;
+            g2.setPaint(Color.white);
+            double dy = tip.y - tail.y;
+            double dx = tip.x - tail.x;
+            double theta = Math.atan2(dy, dx);
+            double x1, y1, x2, y2, x3, y3, x4, y4;
+            x1 = tip.x + 15 - 20 * Math.cos(theta);
+            y1 = tip.y + 15 - 20 * Math.sin(theta);
+            x2 = x1 - barb * Math.cos(theta + phi);
+            y2 = y1 - barb * Math.sin(theta + phi);
+            g2.draw(new Line2D.Double(x1, y1, x2, y2));
+            x3 = x1 - barb * Math.cos(theta - phi);
+            y3 = y1 - barb * Math.sin(theta - phi);
+            g2.draw(new Line2D.Double(x1, y1, x3, y3));
+            g2.setPaint(Color.green);
+            x4 = (x2+x3)/2 - 10 * Math.cos(theta);
+            y4 =(y2+y3)/2 - 10 * Math.sin(theta) + 5;
+            g2.drawString(Integer.toString(peso),(int)x4,(int)y4);
+        }
+    }
+}
