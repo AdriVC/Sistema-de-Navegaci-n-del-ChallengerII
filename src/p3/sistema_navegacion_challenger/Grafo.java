@@ -138,7 +138,7 @@ public class Grafo {
         return ahorros;
     }
     
-    public String[] hiloSimulacion(){
+    public String[] hiloSimulacion2(){
         String[] paths_sim = new String[ruta_optima.size()*2];
         int cont =0;
         for (int i = 0; i < paths_sim.length; i++) {
@@ -155,6 +155,28 @@ public class Grafo {
                     cont++;
                 }else{
                     paths_sim[i] = "./Resources/Hilo/vista_ventana.png";
+                }
+            }
+        }
+        return paths_sim;
+    }
+    
+    public String[] hiloSimulacion(){
+        String[] paths_sim = new String[ruta_optima.size()*2];
+        int cont =0;
+        for (int i = 0; i < paths_sim.length; i++) {
+            if (i%2 == 0) {
+                paths_sim[i] = ruta_optima.get(i/2).getNombre();
+            }else{
+                if (i != paths_sim.length-1) {
+                    if (pesos[cont] > 0) {
+                        paths_sim[i] = ".....";
+                    }else{
+                        paths_sim[i] = "..";
+                    }
+                    cont++;
+                }else{
+                    paths_sim[i] = "Viaje completado";
                 }
             }
         }
