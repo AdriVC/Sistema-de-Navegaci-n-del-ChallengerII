@@ -61,6 +61,16 @@ public class Nodo {
         return flechas_salientes.get(pos);
     }
     
+    public int getPesoFlecha(Nodo destino){
+        int peso =-1;
+        for (int i = 0; i < flechas_salientes.size(); i++) {
+            if(flechas_salientes.get(i).getDestino().equals(destino)){
+                peso = flechas_salientes.get(i).getPeso();
+            }
+        }
+        return peso;
+    }
+    
     public void deleteFlecha(int pos){
         this.flechas_salientes.remove(pos);
     }

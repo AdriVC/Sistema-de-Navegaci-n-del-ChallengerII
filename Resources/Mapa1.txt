@@ -1,0 +1,1 @@
+Ruta1::Tierra,./Resources/Sprites/p3.png|Jupiter,./Resources/Sprites/p2.png|Venus,./Resources/Sprites/p8.png|::Tierra,Venus,5|Jupiter,Venus,12|Jupiter,Tierra,6|Venus,Jupiter,8|Tierra,Jupiter,4

@@ -6,17 +6,24 @@
 package p3.sistema_navegacion_challenger;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -36,16 +43,49 @@ public class Main_Navegacion extends javax.swing.JFrame {
      * Creates new form Main_Navegacion
      */
     public Main_Navegacion() {
-        
+        this.pack();
         initComponents();
-        ruta_actual = new Grafo();
+        mapa_actual = new Grafo();
         jl_Go.setIcon(new ImageIcon("./Resources/go-button.png"));
         jl_MapaActual.setIcon(new ImageIcon("./Resources/cuadricula_mapa_2.png"));
         jl_ventana.setText("");
         jl_ventana.setIcon(new ImageIcon("./Resources/Hilo/vista_ventana.png"));
         jl_agregarPlaneta_openFoto.setIcon(new ImageIcon("./Resources/open_file.png"));
         jb_editorRutas.setEnabled(false);
+        jb_calcularRuta.setEnabled(false);
+        chb_activarWarp.setEnabled(false);
         agregar = true;
+
+        try {
+            Scanner leer = new Scanner(new File("./Resources/Mapa3.txt"));
+            while (leer.hasNext()) {
+                String linea = leer.nextLine();
+                String[] datos = linea.split("::");
+                mapa_actual = new Grafo(datos[0]);
+                String[] nodos = datos[1].split("\\|");
+                for (int i = 0; i < nodos.length; i++) {
+                    String[] datos_nodos = nodos[i].split(",");
+                    mapa_actual.agregarNodo(new Nodo(datos_nodos[0], datos_nodos[1]));
+                }
+                String[] flechas = datos[2].split("\\|");
+                for (int i = 0; i < flechas.length; i++) {
+                    String[] datos_flechas = flechas[i].split(",");
+                    mapa_actual.agregarFlecha(datos_flechas[0], datos_flechas[1], Integer.parseInt(datos_flechas[2]));
+                }
+            }
+            leer.close();
+            reload_datos();
+        } catch (NumberFormatException | FileNotFoundException | HeadlessException e) {
+            System.out.println(e);
+        }
+        if(mapa_actual != null){
+            planeta_actual = mapa_actual.lista_nodos.get(0);
+            jb_editorRutas.setEnabled(true); 
+            jta_logRuta.setText("Bienvenido al Sistema de Navegacion del Challenger II.\nPosicion actual:planeta " + planeta_actual + "\nActualize su mapa para desbloquear la navegacion");
+        }else{
+            jta_logRuta.setText("Bienvenido al Sistema de Navegacion del Challenger II.\nError al cargar el mapa, asegurese que este en el archivo");
+        }
+       
     }
 
     /**
@@ -97,7 +137,9 @@ public class Main_Navegacion extends javax.swing.JFrame {
         jl_Go = new javax.swing.JLabel();
         chb_activarWarp = new javax.swing.JCheckBox();
         jb_editorRutas = new javax.swing.JButton();
-        jb_abrirRuta = new javax.swing.JButton();
+        jb_calcularRuta = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jta_logRuta = new javax.swing.JTextArea();
 
         JF_visitaMapas.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         JF_visitaMapas.setBackground(new java.awt.Color(255, 255, 255));
@@ -357,6 +399,8 @@ public class Main_Navegacion extends javax.swing.JFrame {
 
         jLabel2.setText("Destino:");
 
+        jsp_agregarFlecha_peso.setModel(new javax.swing.SpinnerNumberModel(0, 0, 100, 1));
+
         jLabel3.setText("Peso:");
 
         jb_flechas_guardarCambios.setText("Guardar Cambios");
@@ -415,12 +459,17 @@ public class Main_Navegacion extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(153, 153, 153));
 
         jl_ventana.setText("Pantalla Principal de Navegacion");
         jl_ventana.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jl_ventana.setMaximumSize(new java.awt.Dimension(495, 175));
+        jl_ventana.setMinimumSize(new java.awt.Dimension(495, 175));
+        jl_ventana.setPreferredSize(new java.awt.Dimension(495, 175));
 
         jl_MapaActual.setText("Ruta Actual");
         jl_MapaActual.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jl_MapaActual.setSize(new java.awt.Dimension(425, 425));
 
         jl_Go.setText("GO");
         jl_Go.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -429,63 +478,80 @@ public class Main_Navegacion extends javax.swing.JFrame {
             }
         });
 
+        chb_activarWarp.setFont(new java.awt.Font("Lucida Sans Typewriter", 0, 14)); // NOI18N
         chb_activarWarp.setText("Warp Speed");
 
-        jb_editorRutas.setText("Editar Ruta Actual");
+        jb_editorRutas.setFont(new java.awt.Font("Lucida Sans Typewriter", 0, 14)); // NOI18N
+        jb_editorRutas.setText("Mapa");
+        jb_editorRutas.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jb_editorRutas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jb_editorRutasMouseClicked(evt);
             }
         });
 
-        jb_abrirRuta.setText("Abrir Ruta Existente");
-        jb_abrirRuta.addMouseListener(new java.awt.event.MouseAdapter() {
+        jb_calcularRuta.setFont(new java.awt.Font("Lucida Sans Typewriter", 0, 14)); // NOI18N
+        jb_calcularRuta.setText("Calcular Ruta");
+        jb_calcularRuta.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jb_abrirRutaMouseClicked(evt);
+                jb_calcularRutaMouseClicked(evt);
             }
         });
+
+        jta_logRuta.setEditable(false);
+        jta_logRuta.setBackground(new java.awt.Color(0, 0, 0));
+        jta_logRuta.setColumns(20);
+        jta_logRuta.setFont(new java.awt.Font("Lucida Sans Typewriter", 0, 12)); // NOI18N
+        jta_logRuta.setForeground(new java.awt.Color(102, 255, 102));
+        jta_logRuta.setLineWrap(true);
+        jta_logRuta.setRows(5);
+        jScrollPane3.setViewportView(jta_logRuta);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jl_ventana, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(43, 43, 43)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(31, 31, 31)
-                                .addComponent(chb_activarWarp))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(43, 43, 43)
-                                .addComponent(jl_Go, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jb_abrirRuta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jb_editorRutas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                        .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(40, 40, 40))
+                            .addComponent(jb_editorRutas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jb_calcularRuta, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jl_Go, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(chb_activarWarp)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(31, 31, 31)
-                .addComponent(jl_ventana, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jl_ventana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 495, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
-                        .addComponent(jl_Go, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(chb_activarWarp)
-                        .addGap(18, 18, 18)
-                        .addComponent(jb_editorRutas, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jb_abrirRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(28, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jb_editorRutas, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jb_calcularRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jl_Go, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(12, 12, 12)
+                                .addComponent(chb_activarWarp)))))
+                .addGap(0, 23, Short.MAX_VALUE))
         );
 
         pack();
@@ -497,48 +563,12 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jl_GoMouseClicked
 
     private void jb_editorRutasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_editorRutasMouseClicked
-        reload_datos();
-        JF_visitaMapas.pack();
-        JF_visitaMapas.setVisible(true);
+        if(jb_editorRutas.isEnabled()){
+            //reload_datos();
+            JF_visitaMapas.pack();
+            JF_visitaMapas.setVisible(true);
+        }
     }//GEN-LAST:event_jb_editorRutasMouseClicked
-
-    private void jb_abrirRutaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_abrirRutaMouseClicked
-        JFileChooser jfc_abrirRuta = new JFileChooser("./Resources/");
-        jfc_abrirRuta.setFileFilter(new FileNameExtensionFilter("Txt", "txt"));
-        int seleccion = jfc_abrirRuta.showOpenDialog(new JFrame());
-        if (seleccion == JFileChooser.APPROVE_OPTION) {
-            String file = jfc_abrirRuta.getSelectedFile().getPath();
-            ruta_actual = null;
-            try {
-                Scanner leer = new Scanner(new File(file));
-                while (leer.hasNext()) {
-                    String linea = leer.nextLine();
-                    String[] datos = linea.split("::");
-                    ruta_actual = new Grafo(datos[0]);
-                    String[] nodos = datos[1].split("\\|");
-                    for (int i = 0; i < nodos.length; i++) {
-                        String[] datos_nodos = nodos[i].split(",");
-                        ruta_actual.agregarNodo(new Nodo(datos_nodos[0], datos_nodos[1]));
-                    }
-                    String[] flechas = datos[2].split("\\|");
-                    for (int i = 0; i < flechas.length; i++) {
-                        String[] datos_flechas = flechas[i].split(",");
-                        ruta_actual.agregarFlecha(datos_flechas[0], datos_flechas[1], Integer.parseInt(datos_flechas[2]));
-                    }
-                }
-                leer.close();
-                //System.out.println(ruta_actual.toString());
-            } catch (NumberFormatException | FileNotFoundException | HeadlessException e) {
-                System.out.println(e);
-            }
-        } else if (seleccion == JFileChooser.CANCEL_OPTION) {
-            JOptionPane.showMessageDialog(this, "Cancelado");
-        }
-        if(ruta_actual != null){
-            jb_editorRutas.setEnabled(true);
-        }
-        reload_datos();
-    }//GEN-LAST:event_jb_abrirRutaMouseClicked
 
     private void jl_agregarPlaneta_openFotoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jl_agregarPlaneta_openFotoMouseClicked
         JFileChooser jfc_abrirFoto = new JFileChooser("./Resources/Sprites");
@@ -565,7 +595,12 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jb_agregarFlecha_nuevoMouseClicked
 
     private void jb_visitaMapas_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_visitaMapas_cerrarMouseClicked
+        reload_datos();
         JF_visitaMapas.setVisible(false);
+        jb_calcularRuta.setEnabled(true);
+        chb_activarWarp.setEnabled(true);
+        jl_MapaActual.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("./Resources/mapa_mini.png").getScaledInstance(495, 495, 0)));
+        jta_logRuta.append("\nMapa actualizado\nCalculo de rutas disponible");
     }//GEN-LAST:event_jb_visitaMapas_cerrarMouseClicked
 
     private void jt_flechasExistentesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_flechasExistentesMouseClicked
@@ -592,7 +627,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
                 String[] prueba_path = path_imagen.split("/");
                 if (!jTF_agregarNodo_nombre.getText().equals("") && prueba_path[prueba_path.length - 2].equals("Sprites")) {
                     String path = "./Resources/Sprites/" + prueba_path[prueba_path.length - 1];
-                    ruta_actual.agregarNodo(new Nodo(jTF_agregarNodo_nombre.getText(), path));
+                    mapa_actual.agregarNodo(new Nodo(jTF_agregarNodo_nombre.getText(), path));
                     jTF_agregarNodo_nombre.setText("");
                     jl_agregarPlaneta_icon.setIcon(null);
                     jd_modificarPlanetas.dispose();
@@ -607,8 +642,8 @@ public class Main_Navegacion extends javax.swing.JFrame {
             String[] prueba_path = path_imagen.split("/");
             if (!jTF_agregarNodo_nombre.getText().equals("") && prueba_path[prueba_path.length - 2].equals("Sprites")) {
                 String path = "./Resources/Sprites/" + prueba_path[prueba_path.length - 1];
-                ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setNombre(jTF_agregarNodo_nombre.getText());
-                ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setFoto(path); 
+                mapa_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setNombre(jTF_agregarNodo_nombre.getText());
+                mapa_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).setFoto(path); 
                 jTF_agregarNodo_nombre.setText("");
                 jl_agregarPlaneta_icon.setIcon(null);
                 jd_modificarPlanetas.dispose();
@@ -618,12 +653,13 @@ public class Main_Navegacion extends javax.swing.JFrame {
             
         }
         reload_datos();
+        JF_visitaMapas.setVisible(true);
     }//GEN-LAST:event_jb_planeta_guardarCambiosMouseClicked
 
     private void jb_flechas_guardarCambiosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_flechas_guardarCambiosMouseClicked
         if(agregar){
             if (!jcb_agregarFlecha_partida.getSelectedItem().equals("--") && !jcb_agregarFlecha_destino.getSelectedItem().equals("--")) {
-                ruta_actual.agregarFlecha(((Nodo) jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo) jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int) jsp_agregarFlecha_peso.getValue());
+                mapa_actual.agregarFlecha(((Nodo) jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo) jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int) jsp_agregarFlecha_peso.getValue());
                 jsp_agregarFlecha_peso.setValue(0);
                 jd_modificarFlechas.dispose();
             } else {
@@ -633,14 +669,14 @@ public class Main_Navegacion extends javax.swing.JFrame {
             if (!jcb_agregarFlecha_partida.getSelectedItem().equals("--") && !jcb_agregarFlecha_destino.getSelectedItem().equals("--")) {
                 String partida = (String)jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 0);
                 String destino = (String)jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 1);
-                for (int i = 0; i < ruta_actual.lista_nodos.size(); i++) {
-                    for (int j = 0; j < ruta_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
-                        if (ruta_actual.lista_nodos.get(i).getNombre().equals(partida) && ruta_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
-                            ruta_actual.lista_nodos.get(i).deleteFlecha(j);
+                for (int i = 0; i < mapa_actual.lista_nodos.size(); i++) {
+                    for (int j = 0; j < mapa_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
+                        if (mapa_actual.lista_nodos.get(i).getNombre().equals(partida) && mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
+                            mapa_actual.lista_nodos.get(i).deleteFlecha(j);
                         }
                     }
                 }
-                ruta_actual.agregarFlecha(((Nodo) jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo) jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int) jsp_agregarFlecha_peso.getValue());
+                mapa_actual.agregarFlecha(((Nodo) jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo) jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int) jsp_agregarFlecha_peso.getValue());
                 jsp_agregarFlecha_peso.setValue(0);
                 jd_modificarFlechas.dispose();
                 
@@ -649,7 +685,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
             }
         }
         reload_datos();
-        
+        JF_visitaMapas.setVisible(true);
     }//GEN-LAST:event_jb_flechas_guardarCambiosMouseClicked
 
     private void jmi_modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmi_modificarActionPerformed
@@ -660,11 +696,11 @@ public class Main_Navegacion extends javax.swing.JFrame {
             String destino = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 1);
             Flecha cambio= null;
             Nodo part = null;
-            for (int i = 0; i < ruta_actual.lista_nodos.size(); i++) {
-                for (int j = 0; j < ruta_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
-                    if (ruta_actual.lista_nodos.get(i).getNombre().equals(partida) && ruta_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
-                        part = ruta_actual.lista_nodos.get(i);
-                        cambio = ruta_actual.lista_nodos.get(i).flechas_salientes.get(j);
+            for (int i = 0; i < mapa_actual.lista_nodos.size(); i++) {
+                for (int j = 0; j < mapa_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
+                    if (mapa_actual.lista_nodos.get(i).getNombre().equals(partida) && mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
+                        part = mapa_actual.lista_nodos.get(i);
+                        cambio = mapa_actual.lista_nodos.get(i).flechas_salientes.get(j);
                     }
                 }
             }
@@ -676,9 +712,9 @@ public class Main_Navegacion extends javax.swing.JFrame {
             jd_modificarFlechas.setVisible(true);
         }else{
             jl_modificarPlaneta_titulo.setText("MODIFICAR PLANETA");
-            jTF_agregarNodo_nombre.setText(ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getNombre());
-            jl_agregarPlaneta_icon.setIcon(ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFoto());
-            path_imagen = ruta_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFotoPath();
+            jTF_agregarNodo_nombre.setText(mapa_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getNombre());
+            jl_agregarPlaneta_icon.setIcon(mapa_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFoto());
+            path_imagen = mapa_actual.lista_nodos.get(jt_planetasExistentes.getSelectedRow()).getFotoPath();
             jd_modificarPlanetas.pack();
             jd_modificarPlanetas.setVisible(true);
         } 
@@ -690,22 +726,41 @@ public class Main_Navegacion extends javax.swing.JFrame {
             if (seleccion == JOptionPane.YES_OPTION) {
                 String partida = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 0);
                 String destino = (String) jt_flechasExistentes.getModel().getValueAt(jt_flechasExistentes.getSelectedRow(), 1);
-                for (int i = 0; i < ruta_actual.lista_nodos.size(); i++) {
-                    for (int j = 0; j < ruta_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
-                        if (ruta_actual.lista_nodos.get(i).getNombre().equals(partida) && ruta_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
-                            ruta_actual.lista_nodos.get(i).deleteFlecha(j);
+                for (int i = 0; i < mapa_actual.lista_nodos.size(); i++) {
+                    for (int j = 0; j < mapa_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
+                        if (mapa_actual.lista_nodos.get(i).getNombre().equals(partida) && mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre().equals(destino)) {
+                            mapa_actual.lista_nodos.get(i).deleteFlecha(j);
                         }
                     }
                 }
             }
         } else {
             if(seleccion == JOptionPane.YES_OPTION){
-                ruta_actual.deleteNodo(jt_planetasExistentes.getSelectedRow());
+                mapa_actual.deleteNodo(jt_planetasExistentes.getSelectedRow());
             }
         }
         reload_datos();
-        JOptionPane.showMessageDialog(JF_visitaMapas, "Elemento eliminado exitosamente");
+        JF_visitaMapas.setVisible(true);
     }//GEN-LAST:event_jmi_eliminarActionPerformed
+
+    private void jb_calcularRutaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_calcularRutaMouseClicked
+        if (jb_calcularRuta.isEnabled()) {
+            String[] destinos = new String[mapa_actual.lista_nodos.size()-1];
+            for (int i = 1; i < mapa_actual.lista_nodos.size(); i++) {
+                destinos[i-1] = mapa_actual.lista_nodos.get(i).getNombre();
+            }
+            String dest = (String)JOptionPane.showInputDialog(this,"Seleccione el planeta a donde desea llegar","Planeta Destino",JOptionPane.QUESTION_MESSAGE,null,destinos,destinos[0]);
+            Nodo destino = null;
+            for (int i = 0; i < mapa_actual.lista_nodos.size(); i++) {
+                if(mapa_actual.lista_nodos.get(i).getNombre().equalsIgnoreCase(dest)){
+                    destino = mapa_actual.lista_nodos.get(i);
+                }
+            }
+            int costo = mapa_actual.calcularCostoRutaOptima(planeta_actual, destino, false);
+            jta_logRuta.append(mapa_actual.printRutaOp() + "\nTiempo total = " +  costo + " años luz");
+            
+        }
+    }//GEN-LAST:event_jb_calcularRutaMouseClicked
 
     /**
      * @param args the command line arguments
@@ -745,19 +800,19 @@ public class Main_Navegacion extends javax.swing.JFrame {
     public void reload_datos(){
         //System.out.println("entra a reload_datos");
         //Background grafica = null;
-        Background grafica = new Background("./Resources/cuadricula_mapa.png",ruta_actual.lista_nodos);
+        Background grafica = new Background("./Resources/cuadricula_mapa.png",mapa_actual.lista_nodos);
         //grafica.setVisible(true);
-        ruta_actual.lista_nodos = grafica.getLista();
+        mapa_actual.lista_nodos = grafica.getLista();
         JF_visitaMapas.getContentPane().add(grafica);
         grafica.repaint();
-        //JF_visitaMapas.getContentPane().add(new Background("./Resources/cuadricula_mapa.png",ruta_actual.lista_nodos));
+        //JF_visitaMapas.getContentPane().add(new Background("./Resources/cuadricula_mapa.png",mapa_actual.lista_nodos));
         
         //tabla planetas
         DefaultTableModel modelo_planetas = (DefaultTableModel)jt_planetasExistentes.getModel();
         while(modelo_planetas.getRowCount() >0){
             modelo_planetas.removeRow(0);
         }
-        for(Nodo temp:ruta_actual.lista_nodos){
+        for(Nodo temp:mapa_actual.lista_nodos){
             Object[] row = {temp.getNombre(), temp.getFoto()};
             modelo_planetas.addRow(row);
         }
@@ -768,9 +823,9 @@ public class Main_Navegacion extends javax.swing.JFrame {
         while(modelo_flechas.getRowCount() >0){
             modelo_flechas.removeRow(0);
         }
-        for (int i = 0; i < ruta_actual.lista_nodos.size(); i++) {
-            for (Flecha temp :ruta_actual.lista_nodos.get(i).flechas_salientes) {
-                Object[] row = {ruta_actual.lista_nodos.get(i).getNombre(), temp.getDestino().getNombre(),temp.getPeso()};
+        for (int i = 0; i < mapa_actual.lista_nodos.size(); i++) {
+            for (Flecha temp :mapa_actual.lista_nodos.get(i).flechas_salientes) {
+                Object[] row = {mapa_actual.lista_nodos.get(i).getNombre(), temp.getDestino().getNombre(),temp.getPeso()};
                 modelo_flechas.addRow(row);
             }
         }
@@ -779,7 +834,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         //combo box planetas de partida
         DefaultComboBoxModel cb_planetas_partida = new DefaultComboBoxModel();
         cb_planetas_partida.addElement("--");
-        for(Nodo tep:ruta_actual.lista_nodos){
+        for(Nodo tep:mapa_actual.lista_nodos){
             cb_planetas_partida.addElement(tep);
         }
         jcb_agregarFlecha_partida.setModel(cb_planetas_partida);
@@ -787,13 +842,32 @@ public class Main_Navegacion extends javax.swing.JFrame {
         //combo box planetas destino
         DefaultComboBoxModel cb_planetas_destino = new DefaultComboBoxModel();
         cb_planetas_destino.addElement("--");
-        for(Nodo tep:ruta_actual.lista_nodos){
+        for(Nodo tep:mapa_actual.lista_nodos){
             cb_planetas_destino.addElement(tep);
         }
         jcb_agregarFlecha_destino.setModel(cb_planetas_destino);
         
         //JF_visitaMapas.repaint();
         JF_visitaMapas.pack();
+        JF_visitaMapas.setVisible(true);
+        JF_visitaMapas.setVisible(false);
+        makePanelImage(grafica);
+    }
+    
+    private void makePanelImage(Component panel)
+    {
+        Dimension size = panel.getSize();
+        BufferedImage image = new BufferedImage(size.height, size.width, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = image.createGraphics();
+        panel.paint(g2);
+        try
+        {
+            ImageIO.write(image, "png", new File("./Resources/mapa_mini.png"));
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -811,12 +885,13 @@ public class Main_Navegacion extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTextField jTF_agregarNodo_nombre;
-    private javax.swing.JButton jb_abrirRuta;
     private javax.swing.JButton jb_agregarFlecha_nuevo;
     private javax.swing.JButton jb_agregarPlaneta_nuevo;
+    private javax.swing.JButton jb_calcularRuta;
     private javax.swing.JButton jb_editorRutas;
     private javax.swing.JButton jb_flechas_guardarCambios;
     private javax.swing.JButton jb_planeta_guardarCambios;
@@ -838,11 +913,12 @@ public class Main_Navegacion extends javax.swing.JFrame {
     private javax.swing.JSpinner jsp_agregarFlecha_peso;
     private javax.swing.JTable jt_flechasExistentes;
     private javax.swing.JTable jt_planetasExistentes;
+    private javax.swing.JTextArea jta_logRuta;
     // End of variables declaration//GEN-END:variables
-    Grafo ruta_actual;
+    Grafo mapa_actual;
     String path_imagen;
     boolean agregar;
-    Nodo nodo_seleccionado;
+    Nodo planeta_actual;
     Flecha flecha_seleccionada;
 }
 

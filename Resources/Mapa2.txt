@@ -1,0 +1,1 @@
+Ruta2::Tierra,./Resources/Sprites/p3.png|Pluto,./Resources/Sprites/p5.png|Saturno,./Resources/Sprites/p2.png|Mercurio,./Resources/Sprites/p7.png::Mercurio,Pluto,45|Saturno,Tierra,10|Tierra,Pluto,6|Saturno,Mercurio,30|Pluto,Tierra,14|Tierra,Saturno,14
