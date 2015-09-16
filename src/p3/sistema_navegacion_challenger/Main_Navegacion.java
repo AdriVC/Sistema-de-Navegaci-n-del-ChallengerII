@@ -57,7 +57,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         agregar = true;
 
         try {
-            Scanner leer = new Scanner(new File("./Resources/Mapa2.txt"));
+            Scanner leer = new Scanner(new File("./Resources/Mapa3.txt"));
             while (leer.hasNext()) {
                 String linea = leer.nextLine();
                 String[] datos = linea.split("::");
@@ -756,6 +756,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
                 }
             }
             int costo = mapa_actual.calcularCostoRutaOptima(planeta_actual, destino, false);
+            System.out.println("Costo: " + costo);
             mapa_actual.printRutaOp();
         }
     }//GEN-LAST:event_jb_calcularRutaMouseClicked
