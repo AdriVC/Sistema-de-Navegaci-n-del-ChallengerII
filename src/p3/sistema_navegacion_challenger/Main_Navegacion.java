@@ -459,6 +459,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(153, 153, 153));
 
         jl_ventana.setText("Pantalla Principal de Navegacion");
         jl_ventana.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -526,16 +527,17 @@ public class Main_Navegacion extends javax.swing.JFrame {
                                 .addComponent(chb_activarWarp)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3)))
-                .addGap(18, 18, 18)
-                .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
+                    .addComponent(jl_MapaActual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jl_ventana, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -545,12 +547,9 @@ public class Main_Navegacion extends javax.swing.JFrame {
                                 .addComponent(jb_calcularRuta, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(chb_activarWarp)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                                 .addComponent(jl_Go, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane3)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jl_MapaActual, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane3))))
                 .addGap(19, 19, 19))
         );
 
@@ -595,10 +594,11 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jb_agregarFlecha_nuevoMouseClicked
 
     private void jb_visitaMapas_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_visitaMapas_cerrarMouseClicked
+        reload_datos();
         JF_visitaMapas.setVisible(false);
         jb_calcularRuta.setEnabled(true);
         chb_activarWarp.setEnabled(true);
-        jl_MapaActual.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("./Resources/mapa_mini.png").getScaledInstance(415, 415, 0)));
+        jl_MapaActual.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage("./Resources/mapa_mini.png").getScaledInstance(425, 425, 0)));
         jta_logRuta.append("\nMapa actualizado\nCalculo de rutas disponible");
     }//GEN-LAST:event_jb_visitaMapas_cerrarMouseClicked
 
@@ -739,6 +739,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
             }
         }
         reload_datos();
+        JF_visitaMapas.setVisible(true);
         JOptionPane.showMessageDialog(JF_visitaMapas, "Elemento eliminado exitosamente");
     }//GEN-LAST:event_jmi_eliminarActionPerformed
 

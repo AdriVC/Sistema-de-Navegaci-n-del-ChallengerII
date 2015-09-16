@@ -25,200 +25,135 @@ public class Grafo {
     public int calcularCostoRutaOptima(Nodo inicial, Nodo finale, boolean warpSpeed) {
         ruta_optima = new ArrayList();
         costos_ruta_op = new ArrayList();
-        Nodo[] nodos = new Nodo[lista_nodos.size() - 1];
-        //Nodo[] recorridos = new Nodo[lista_nodos.size()];
-        ArrayList <Nodo> recorridos = new ArrayList();
+        Nodo[] nodosParaTachar = new Nodo[lista_nodos.size() - 1];
+        Nodo[] nodos = new Nodo[lista_nodos.size()-1];
+        Nodo[] recorridos = new Nodo[lista_nodos.size()-1];
         int[] costos = new int[lista_nodos.size()-1];
+        
         if (inicial == null || finale == null) {
             return -1;
         } else {
+            
             int destino = 0;
             int cont = 0;
             for (int i = 0; i < lista_nodos.size(); i++) {
                 if (!lista_nodos.get(i).equals(inicial)) {
+                    nodosParaTachar[cont] = lista_nodos.get(i);
                     nodos[cont] = lista_nodos.get(i);
+                    if(lista_nodos.get(i).equals(finale)){
+                        destino = cont;
+                    }
+                    
+                    //recorridos[cont] = inicial;
                     cont++;
-                }else{
-                    recorridos.add(inicial);
                 }
-                if (lista_nodos.get(i).equals(finale)) {
-                    destino = i;
-                }
+                
             }
+            
+            ruta_optima.add(inicial);
+            
             //llenar los costosParaLlegarADestino para nodo inicial
-            for (int i = 0; i < nodos.length; i++) {
-                if (inicial.getPesoFlecha(nodos[i]) == -1) {
+            for (int i = 0; i < nodosParaTachar.length; i++) {
+                if (inicial.getPesoFlecha(nodosParaTachar[i]) == -1) {
                     costos[i] = (int) Double.POSITIVE_INFINITY;
                 } else {
-                    costos[i] = inicial.getPesoFlecha(nodos[i]);
+                    costos[i] = inicial.getPesoFlecha(nodosParaTachar[i]);
                 }
             }
             
-            System.out.print("nodos:");
+            System.out.print("nodos para tachar:  ");
+            this.printArray(nodosParaTachar);
+            System.out.print("nodos:  ");
             this.printArray(nodos);
-            System.out.print("recorridos:");
+            System.out.print("recorridos:  ");
             this.printArray(recorridos);
-            System.out.print("costos:");
+            System.out.print("costos:  ");
             this.printArray(costos);
             
-            for (int i = 0; i < nodos.length; i++) {
+            for (int i = 0; i < nodosParaTachar.length; i++) {
                 Nodo temp = null;
-                int indexTemp =-1;
-                int costoMin = (int)Double.POSITIVE_INFINITY;
-                for (int j = 0; j < nodos.length; j++) {
-                    if(costos[j] < costoMin && nodos[j] != null){
-                        temp = nodos[j];
+                int indexTemp =0;
+                
+                for (int j = 0; j < nodosParaTachar.length; j++) {
+                    if (nodosParaTachar[j] != null) {
+                        temp = nodosParaTachar[j];
+                        indexTemp = j;
+                    }
+                }
+                
+                int costoMin = costos[indexTemp];
+                for (int j = 0; j < nodosParaTachar.length; j++) {
+                    if(costos[j] < costoMin && nodosParaTachar[j] != null){
+                        temp = nodosParaTachar[j];
                         indexTemp = j;
                         costoMin = costos[j];
                     }
                 }
-                nodos[indexTemp] = null;
-                for (int j = 0; j < nodos.length; j++) {
-                    if(nodos[j] != null){
-                        int suma = -1;
-                        if (costos[indexTemp] == (int)Double.POSITIVE_INFINITY || temp.getPesoFlecha(nodos[j]) == -1) {
+                
+                nodosParaTachar[indexTemp] = null;
+                
+                //cont = 0;
+                for (int j = 0; j < nodosParaTachar.length; j++) {
+                    if(nodosParaTachar[j] != null){
+                        int suma;
+                        if (costos[indexTemp] == (int)Double.POSITIVE_INFINITY || temp.getPesoFlecha(nodosParaTachar[j]) == -1) {
                             suma = (int)Double.POSITIVE_INFINITY;
                         }else{
-                            suma = costos[indexTemp] + temp.getPesoFlecha(nodos[j]);
+                            suma = costos[indexTemp] + temp.getPesoFlecha(nodosParaTachar[j]);
                         }
                         if(suma < costos[j]){
                             costos[j] = suma;
-                            recorridos.add(temp);
+                            if(j== destino){
+                                if(ruta_optima.get(ruta_optima.size()-1).getPesoFlecha(temp) == -1){
+                                    ruta_optima.remove(ruta_optima.size()-1);
+                                }
+                                ruta_optima.add(temp);
+                                
+                            }
+                            //recorridos[cont] = temp;
+                            //cont++;
                         }
                     }
                 } 
                 
-            }
-            
-            System.out.println("");
-            System.out.print("nodos:");
-            this.printArray(nodos);
-            System.out.print("recorridos:");
-            this.printArray(recorridos);
-            System.out.print("costos:");
-            this.printArray(costos);
-            
-            
-           if(costos[destino-1] != (int)Double.POSITIVE_INFINITY){
-                ruta(destino,lista_nodos,recorridos,inicial);
-                Collections.reverse(ruta_optima);
-                Collections.reverse(costos_ruta_op);
-            }
-            return costos[destino-1];
-        }
-    }
-    
-    public int calcularCostoRutaOptima2(Nodo inicial, Nodo finale, boolean warpSpeed) {
-        ruta_optima = new ArrayList();
-        costos_ruta_op = new ArrayList();
-        
-        System.out.println("lista de flechas de tierra");
-        this.printArray(inicial.flechas_salientes);
-        
-        Nodo[] nodosPorRecorrer = new Nodo[lista_nodos.size()];
-        ArrayList <Nodo> recorridos = new ArrayList();
-        int costoParaLlegarADestino = (int)Double.POSITIVE_INFINITY;
-        
-        if (inicial == null || finale == null) {
-            return -1;
-        } else {
-            for (int i = 0; i < lista_nodos.size(); i++) {
-                nodosPorRecorrer[i] = lista_nodos.get(i);
-            }
-            
-            Nodo temp = inicial;
-            Nodo tempPadre = inicial;
-            for (int i = 0; i < 10; i++) {
-                
-            }
-            int indexTemp = lista_nodos.indexOf(inicial);
-            
-            System.out.println("temp: " + temp.toString());
-            for (int i = 0; i < lista_nodos.size(); i++) {
-                
-                for (int j = 0; j < lista_nodos.size(); j++) {
-                    if (lista_nodos.get(j).equals(temp)){
-                        recorridos.add(temp);
-                        nodosPorRecorrer[j] = null;
-                    }
-                }
-                
-                int suma = (int)Double.POSITIVE_INFINITY;
-                if (temp.getPesoFlecha(finale) != -1) {
-                    suma = 0;
-                    for (int j = 0; j < recorridos.size() - 1; j++) {
-                        if (recorridos.get(j).getPesoFlecha(recorridos.get(j + 1)) != -1) {
-                            suma += recorridos.get(j).getPesoFlecha(recorridos.get(j + 1));
-                        }
-                    }
-                    suma += temp.getPesoFlecha(finale);
-                }
-                if(suma < costoParaLlegarADestino){
-                    costoParaLlegarADestino = suma;
-                }
-                
-                System.out.print("nodos por recorrer:  ");
-                this.printArray(nodosPorRecorrer);
+                System.out.print("nodos para tachar:  ");
+                this.printArray(nodosParaTachar);
+                System.out.print("nodos:  ");
+                this.printArray(nodos);
                 System.out.print("recorridos:  ");
                 this.printArray(recorridos);
-                System.out.println("costo para llegar al destino:  " + costoParaLlegarADestino);
+                System.out.print("costos:  ");
+                this.printArray(costos);
                 
-                
-                for (int j = 0; j < nodosPorRecorrer.length; j++) {
-                    if (nodosPorRecorrer[j] != null && tempPadre.getPesoFlecha(nodosPorRecorrer[j]) != -1) {
-                        temp = nodosPorRecorrer[j];
-                        System.out.println(j+ ": temp en nodos conectados: " + temp.toString());
-                        break;
-                    }
-                }
-                if (indexTemp == lista_nodos.indexOf(temp)) {
-                    for (int j = 0; j < nodosPorRecorrer.length; j++) {
-                        if (nodosPorRecorrer[j] != null) {
-                            temp = nodosPorRecorrer[j];
-                            indexTemp = j;
-                            break;
-                        }
-                    }
-                }else{
-                    indexTemp = lista_nodos.indexOf(temp);
-                }
-                
-                System.out.println("Temp: " + temp.toString());
             }
             
+            ruta_optima.add(finale);
             
-            //if(costosParaLlegarADestino[destino] != (int)Double.POSITIVE_INFINITY){
-                //ruta(destino,lista_nodos,recorridos,inicial);
+           if(costos[destino] != (int)Double.POSITIVE_INFINITY){
+                //rutaOptima(destino,nodos,recorridos,inicial);
                 //Collections.reverse(ruta_optima);
                 //Collections.reverse(costos_ruta_op);
-            //}
-            return costoParaLlegarADestino;
+            }
+            return costos[destino];
         }
     }
     
-    private void ruta(int indice, ArrayList<Nodo> nodos, ArrayList<Nodo> recorridos, Nodo inicial){
-        System.out.println("recursion:");
-        System.out.print("indice: " + indice);
-        System.out.println("recorrido[indice]: " + recorridos.get(indice).toString());
-        if(recorridos.get(indice).equals(inicial)){
-            System.out.println("entra");
+    private void rutaOptima(int indice, Nodo[] nodos, Nodo[] recorridos, Nodo inicial){
+        System.out.println("NUEVO RECURSIVO:\nindice: " + indice);
+        if(recorridos[indice].equals(inicial)){
+            System.out.println("entro a condicion final");
             ruta_optima.add(inicial);
-            costos_ruta_op.add(recorridos.get(indice).getPesoFlecha(nodos.get(indice+1)));
+            costos_ruta_op.add(recorridos[indice].getPesoFlecha(nodos[indice]));
         }else{
-            ruta_optima.add(recorridos.get(indice));
-            System.out.println("recorridos.get(indice) " + recorridos.get(indice).toString());
-            System.out.println("nodos.get(indice) " + nodos.get(indice).toString());
-            costos_ruta_op.add(recorridos.get(indice).getPesoFlecha(nodos.get(indice)));
-            System.out.println("for del else:");
-            for (int i = 0; i < recorridos.size()-1; i++) {
-                System.out.print(i + ": ");
-                System.out.print(nodos.get(i+1).toString() + " == ");
-                System.out.println(recorridos.get(i).toString());
-                if(nodos.get(i+1).equals(recorridos.get(i))){
+            ruta_optima.add(recorridos[indice]);
+            costos_ruta_op.add(recorridos[indice].getPesoFlecha(nodos[indice]));
+            for (int i = 0; i < nodos.length; i++) {
+                System.out.println("for del else: "+ nodos[i] + " == " + recorridos[i]);
+                if(nodos[i].equals(recorridos[i])){
                     indice = i;
                 }
             }
-            ruta(indice,nodos,recorridos,inicial);
+            rutaOptima(indice,nodos,recorridos,inicial);
         }
     }
     
@@ -260,10 +195,12 @@ public class Grafo {
     
     public void printRutaOp(){
         System.out.println("Ruta optima: ");
-        for (int i = 0; i < ruta_optima.size()-1; i++) {
-            System.out.print(ruta_optima.get(i) + "--" + costos_ruta_op.get(i) + "-->");
-        }
-        //System.out.print(ruta_optima.get(ruta_optima.size()-1));
+        if (!ruta_optima.isEmpty()) {
+            for (int i = 0; i < ruta_optima.size() - 1; i++) {
+                System.out.print(ruta_optima.get(i) + "---->");
+            }
+            System.out.print(ruta_optima.get(ruta_optima.size() - 1));
+        } 
     }
     
     public void agregarNodo(Nodo nuevo){
