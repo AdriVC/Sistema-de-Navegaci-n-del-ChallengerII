@@ -11,15 +11,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -54,10 +54,11 @@ public class Main_Navegacion extends javax.swing.JFrame {
         jb_editorRutas.setEnabled(false);
         jb_calcularRuta.setEnabled(false);
         chb_activarWarp.setEnabled(false);
+        destino_actual = null;
         agregar = true;
 
         try {
-            Scanner leer = new Scanner(new File("./Resources/Mapa3.txt"));
+            Scanner leer = new Scanner(new File("./Resources/Registros/Mapa3.txt"));
             while (leer.hasNext()) {
                 String linea = leer.nextLine();
                 String[] datos = linea.split("::");
@@ -460,6 +461,11 @@ public class Main_Navegacion extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(153, 153, 153));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jl_ventana.setText("Pantalla Principal de Navegacion");
         jl_ventana.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -559,7 +565,14 @@ public class Main_Navegacion extends javax.swing.JFrame {
 
     private void jl_GoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jl_GoMouseClicked
         // TODO add your handling code here:
-        JOptionPane.showMessageDialog(this, " entra a simulacion");
+        if (destino_actual == null) {
+            jta_logRuta.append("\n\nDestino no seleccionado, favor cree una nueva ruta.");
+        }else{
+            jta_logRuta.append("\nentra a simulacion");
+            planeta_actual = destino_actual;
+            destino_actual = null;
+            jta_logRuta.append("\n\nSu posicion ha sido actualizada\nPosicion actual:planeta " + planeta_actual);
+        }
     }//GEN-LAST:event_jl_GoMouseClicked
 
     private void jb_editorRutasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_editorRutasMouseClicked
@@ -592,7 +605,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jb_agregarPlaneta_nuevoMouseClicked
 
     private void jb_agregarFlecha_nuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_agregarFlecha_nuevoMouseClicked
-        if (jb_aregarFlecha_nuevo.isEnabled()) {
+        if (jb_agregarFlecha_nuevo.isEnabled()) {
             jsp_agregarFlecha_peso.setValue(0);
             agregar = true;
             jl_modificarFlechas_titulo.setText("AGREGAR NUEVA FLECHA:");
@@ -765,11 +778,74 @@ public class Main_Navegacion extends javax.swing.JFrame {
                     destino = mapa_actual.lista_nodos.get(i);
                 }
             }
-            mapa_actual.calcularCostoRutaOptima(planeta_actual, destino);
-            jta_logRuta.append(mapa_actual.printRutaOp(chb_activarWarp.isSelected()));
-            
+            if(destino != null){
+               destino_actual = destino;
+               mapa_actual.calcularCostoRutaOptima(planeta_actual, destino);
+               jta_logRuta.append(mapa_actual.printRutaOp(chb_activarWarp.isSelected()));
+               
+            }
         }
     }//GEN-LAST:event_jb_calcularRutaMouseClicked
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        int seleccion = JOptionPane.showConfirmDialog(this, "Desea guardar los registros del Challenger y los cambios al mapa?");
+        if (seleccion == JOptionPane.YES_OPTION) {
+            FileWriter fw = null;
+            BufferedWriter bw = null;
+            try {
+                fw = new FileWriter("./Resources/Registros/registroChallenger.txt", true); // es un constructor sobre cargado, si se incluye el booleano en true, entonces el texto lo agrega al final del texto que ya existe. 
+                bw = new BufferedWriter(fw);
+                bw.write("\n\n------REGISTRO NUEVO------\n" + jta_logRuta.getText());
+                bw.flush(); // si el archivo no existe, lo crea
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    bw.close();
+                    fw.close();
+                } catch (IOException ex) {
+                }
+            }
+            fw = null;
+            bw = null;
+            try {
+                fw = new FileWriter("./Resources/Registros/"+ mapa_actual.getNombre() +".txt", false); // es un constructor sobre cargado, si se incluye el booleano en true, entonces el texto lo agrega al final del texto que ya existe. 
+                bw = new BufferedWriter(fw);
+                bw.write(mapa_actual.getNombre() + "::");
+                for (int i = 0; i < mapa_actual.lista_nodos.size(); i++) {
+                    if (i != mapa_actual.lista_nodos.size()-1) {
+                        bw.write(mapa_actual.lista_nodos.get(i).getNombre() + "," + mapa_actual.lista_nodos.get(i).getFotoPath() + "|");
+                    }else{
+                        bw.write(mapa_actual.lista_nodos.get(i).getNombre() + "," + mapa_actual.lista_nodos.get(i).getFotoPath());
+                    }
+                }
+                bw.write("::");
+                for (int i = 0; i < mapa_actual.lista_nodos.size(); i++) {
+                    for (int j = 0; j < mapa_actual.lista_nodos.get(i).flechas_salientes.size(); j++) {
+                        if(i != (mapa_actual.lista_nodos.size()-1) || j != (mapa_actual.lista_nodos.get(i).flechas_salientes.size()-1)){
+                            bw.write(mapa_actual.lista_nodos.get(i).getNombre() + "," + 
+                                    mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre() + "," + 
+                                    mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getPeso() + "|");
+                        }else{
+                            bw.write(mapa_actual.lista_nodos.get(i).getNombre() + "," +
+                                    mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getDestino().getNombre() + "," + 
+                                    mapa_actual.lista_nodos.get(i).flechas_salientes.get(j).getPeso());
+                        }
+                    }
+                }
+                bw.flush(); // si el archivo no existe, lo crea
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    bw.close();
+                    fw.close();
+                } catch (IOException ex) {
+                }
+            }
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
@@ -928,6 +1004,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
     String path_imagen;
     boolean agregar;
     Nodo planeta_actual;
+    Nodo destino_actual;
     Flecha flecha_seleccionada;
 }
 

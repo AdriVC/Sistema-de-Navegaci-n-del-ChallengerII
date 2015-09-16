@@ -1,0 +1,1 @@
+Mapa3::Tierra,./Resources/Sprites/p3.png|Pluto,./Resources/Sprites/p4.png|Mercurio,./Resources/Sprites/p2.png|Saturno,./Resources/Sprites/p5.png|Jupiter,./Resources/Sprites/p1.png::Tierra,Pluto,10|Tierra,Saturno,30|Tierra,Jupiter,100|Pluto,Mercurio,50|Mercurio,Jupiter,10|Saturno,Mercurio,20|Saturno,Jupiter,60|
