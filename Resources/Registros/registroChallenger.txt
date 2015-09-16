@@ -1,0 +1,62 @@
+Bienvenido al Sistema de Navegacion del Challenger II.
+Posicion actual:planeta Tierra
+Actualize su mapa para desbloquear la navegacion
+Mapa actualizado
+Calculo de rutas disponible
+
+NUEVA RUTA:
+Partida: Tierra
+Destino: Saturno
+Warp: desactivado
+Ruta optima:
+Tierra--30-->Saturno
+Tiempo total = 30 años luz
+
+NUEVA RUTA:
+Partida: Tierra
+Destino: Mercurio
+Warp: activado
+Ruta optima:
+Tierra--0-->Saturno--0-->Mercurio
+Tiempo total = 0 años luz
+entra a simulacion
+
+Destino no seleccionado, favor cree una nueva ruta.Bienvenido al Sistema de Navegacion del Challenger II.
+Posicion actual:planeta Tierra
+Actualize su mapa para desbloquear la navegacion
+Mapa actualizado
+Calculo de rutas disponible
+
+NUEVA RUTA:
+Partida: Tierra
+Destino: Saturno
+Warp: desactivado
+Ruta optima:
+Tierra--30-->Saturno
+Tiempo total = 30 años luz
+
+NUEVA RUTA:
+Partida: Tierra
+Destino: Mercurio
+Warp: desactivado
+Ruta optima:
+Tierra--30-->Saturno--20-->Mercurio
+Tiempo total = 50 años luz
+entra a simulacion
+Su posicion ha sido actualizada
+Posicion actual:planeta Mercurio
+
+------REGISTRO NUEVO------
+Bienvenido al Sistema de Navegacion del Challenger II.
+Posicion actual:planeta Tierra
+Actualize su mapa para desbloquear la navegacion
+Mapa actualizado
+Calculo de rutas disponible
+
+NUEVA RUTA:
+Partida: Tierra
+Destino: Pluto
+Warp: desactivado
+Ruta optima:
+Tierra--10-->Pluto
+Tiempo total = 10 años luz

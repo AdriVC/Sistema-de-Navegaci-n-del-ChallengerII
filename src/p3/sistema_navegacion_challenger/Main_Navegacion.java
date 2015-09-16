@@ -16,8 +16,11 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
@@ -55,7 +58,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         agregar = true;
 
         try {
-            Scanner leer = new Scanner(new File("./Resources/Mapa3.txt"));
+            Scanner leer = new Scanner(new File("./Resources/Registros/Mapa3.txt"));
             while (leer.hasNext()) {
                 String linea = leer.nextLine();
                 String[] datos = linea.split("::");
@@ -458,6 +461,11 @@ public class Main_Navegacion extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(153, 153, 153));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jl_ventana.setText("Pantalla Principal de Navegacion");
         jl_ventana.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -563,6 +571,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
             jta_logRuta.append("\nentra a simulacion");
             planeta_actual = destino_actual;
             destino_actual = null;
+            jta_logRuta.append("\n\nSu posicion ha sido actualizada\nPosicion actual:planeta " + planeta_actual);
         }
     }//GEN-LAST:event_jl_GoMouseClicked
 
@@ -777,6 +786,29 @@ public class Main_Navegacion extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jb_calcularRutaMouseClicked
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        int seleccion = JOptionPane.showConfirmDialog(this, "Desea guardar los registros del Challenger?");
+        if (seleccion == JOptionPane.YES_OPTION) {
+            FileWriter fw = null;
+            BufferedWriter bw = null;
+            try {
+                fw = new FileWriter("./Resources/Registros/registroChallenger.txt", true); // es un constructor sobre cargado, si se incluye el booleano en true, entonces el texto lo agrega al final del texto que ya existe. 
+                bw = new BufferedWriter(fw);
+                bw.write("\n\n------REGISTRO NUEVO------\n" + jta_logRuta.getText());
+                bw.flush(); // si el archivo no existe, lo crea
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    bw.close();
+                    fw.close();
+                } catch (IOException ex) {
+                }
+            }
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
