@@ -581,17 +581,24 @@ public class Main_Navegacion extends javax.swing.JFrame {
     }//GEN-LAST:event_jl_agregarPlaneta_openFotoMouseClicked
 
     private void jb_agregarPlaneta_nuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_agregarPlaneta_nuevoMouseClicked
-        agregar = true;
-        jl_modificarPlaneta_titulo.setText("AGREGAR NUEVO PLANETA:");
-        jd_modificarPlanetas.pack();
-        jd_modificarPlanetas.setVisible(true);
+        if (jb_agregarPlaneta_nuevo.isEnabled()) {
+            jTF_agregarNodo_nombre.setText("");
+            jl_agregarPlaneta_icon.setIcon(null);
+            agregar = true;
+            jl_modificarPlaneta_titulo.setText("AGREGAR NUEVO PLANETA:");
+            jd_modificarPlanetas.pack();
+            jd_modificarPlanetas.setVisible(true);
+        }
     }//GEN-LAST:event_jb_agregarPlaneta_nuevoMouseClicked
 
     private void jb_agregarFlecha_nuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_agregarFlecha_nuevoMouseClicked
-        agregar = true;
-        jl_modificarFlechas_titulo.setText("AGREGAR NUEVA FLECHA:");
-        jd_modificarFlechas.pack();
-        jd_modificarFlechas.setVisible(true);
+        if (jb_aregarFlecha_nuevo.isEnabled()) {
+            jsp_agregarFlecha_peso.setValue(0);
+            agregar = true;
+            jl_modificarFlechas_titulo.setText("AGREGAR NUEVA FLECHA:");
+            jd_modificarFlechas.pack();
+            jd_modificarFlechas.setVisible(true);
+        }
     }//GEN-LAST:event_jb_agregarFlecha_nuevoMouseClicked
 
     private void jb_visitaMapas_cerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jb_visitaMapas_cerrarMouseClicked
@@ -628,8 +635,10 @@ public class Main_Navegacion extends javax.swing.JFrame {
                 if (!jTF_agregarNodo_nombre.getText().equals("") && prueba_path[prueba_path.length - 2].equals("Sprites")) {
                     String path = "./Resources/Sprites/" + prueba_path[prueba_path.length - 1];
                     mapa_actual.agregarNodo(new Nodo(jTF_agregarNodo_nombre.getText(), path));
-                    jTF_agregarNodo_nombre.setText("");
-                    jl_agregarPlaneta_icon.setIcon(null);
+                    if(mapa_actual.lista_nodos.size() >=10){
+                        JOptionPane.showMessageDialog(JF_visitaMapas, "Ha llegado al limite de planetas que puede tener por mapa.");
+                        jb_agregarPlaneta_nuevo.setEnabled(false);
+                    }
                     jd_modificarPlanetas.dispose();
                     
                 } else {
@@ -660,7 +669,7 @@ public class Main_Navegacion extends javax.swing.JFrame {
         if(agregar){
             if (!jcb_agregarFlecha_partida.getSelectedItem().equals("--") && !jcb_agregarFlecha_destino.getSelectedItem().equals("--")) {
                 mapa_actual.agregarFlecha(((Nodo) jcb_agregarFlecha_partida.getSelectedItem()).getNombre(), ((Nodo) jcb_agregarFlecha_destino.getSelectedItem()).getNombre(), (int) jsp_agregarFlecha_peso.getValue());
-                jsp_agregarFlecha_peso.setValue(0);
+                
                 jd_modificarFlechas.dispose();
             } else {
                 JOptionPane.showMessageDialog(JF_visitaMapas, "No ha llenado todos los campos necesarios");
@@ -756,8 +765,8 @@ public class Main_Navegacion extends javax.swing.JFrame {
                     destino = mapa_actual.lista_nodos.get(i);
                 }
             }
-            int costo = mapa_actual.calcularCostoRutaOptima(planeta_actual, destino, false);
-            jta_logRuta.append(mapa_actual.printRutaOp() + "\nTiempo total = " +  costo + " años luz");
+            mapa_actual.calcularCostoRutaOptima(planeta_actual, destino);
+            jta_logRuta.append(mapa_actual.printRutaOp(chb_activarWarp.isSelected()));
             
         }
     }//GEN-LAST:event_jb_calcularRutaMouseClicked
