@@ -168,7 +168,8 @@ public class Grafo {
     }
     
     public void agregarNodo(Nodo nuevo){
-        this.lista_nodos.add(nuevo);
+            this.lista_nodos.add(nuevo);
+        
     }
     
     public void deleteNodo(int pos){
