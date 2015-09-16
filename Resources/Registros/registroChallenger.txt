@@ -119,3 +119,22 @@ Warp: activado
 Ruta optima:
 Tierra--0-->Saturno--0-->Mercurio--10-->Jupiter
 Tiempo total = 10 años luz
+
+------REGISTRO NUEVO------
+Bienvenido al Sistema de Navegacion del Challenger II.
+Posicion actual:planeta Tierra
+Actualize su mapa para desbloquear la navegacion
+Mapa actualizado
+Calculo de rutas disponible
+
+NUEVA RUTA:
+Partida: Tierra
+Destino: Jupiter
+Warp: desactivado
+Ruta optima:
+Tierra--30-->Saturno--20-->Mercurio--10-->Jupiter
+Tiempo total = 60 años luz
+entra a simulacion
+
+Su posicion ha sido actualizada
+Posicion actual:planeta Jupiter

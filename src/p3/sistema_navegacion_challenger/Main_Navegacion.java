@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
@@ -28,6 +29,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -569,8 +571,9 @@ public class Main_Navegacion extends javax.swing.JFrame {
             jta_logRuta.append("\n\nDestino no seleccionado, favor cree una nueva ruta.");
         }else{
             jta_logRuta.append("\nentra a simulacion");
-            
-            
+            String [] paths = mapa_actual.hiloSimulacion();
+            SimpleThread simulacion = new SimpleThread("sim");
+            simulacion.run(paths);
             planeta_actual = destino_actual;
             destino_actual = null;
             jta_logRuta.append("\n\nSu posicion ha sido actualizada\nPosicion actual:planeta " + planeta_actual);
@@ -879,7 +882,8 @@ public class Main_Navegacion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main_Navegacion().setVisible(true);
+               esto = new Main_Navegacion();
+               esto.setVisible(true); 
             }
         });
     }
@@ -1008,6 +1012,30 @@ public class Main_Navegacion extends javax.swing.JFrame {
     Nodo planeta_actual;
     Nodo destino_actual;
     Flecha flecha_seleccionada;
+    static Main_Navegacion esto;
+
+class SimpleThread extends Thread {
+    public SimpleThread(String str) {
+        super(str);
+    }
+    public void run(String[] lista) {
+        for (int i = 0; i < lista.length; i++) {
+            System.out.println("run " + i );
+            jl_ventana.setIcon(null);
+            jl_ventana.setIcon(new ImageIcon(lista[i]));
+            esto.repaint();
+            esto.setVisible(false);
+            esto.setVisible(true);
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {}
+        }
+    }
+}
+
+
+
+
 }
 
 class Background extends JPanel {
@@ -1080,3 +1108,4 @@ class Background extends JPanel {
     }
     
 }
+

@@ -139,20 +139,20 @@ public class Grafo {
     }
     
     public String[] hiloSimulacion(){
-        String[] paths_sim = new String[ruta_optima.size()*2-1];
+        String[] paths_sim = new String[ruta_optima.size()*2];
         int cont =0;
-        for (int i = 0; i < ruta_optima.size(); i++) {
+        for (int i = 0; i < paths_sim.length; i++) {
             if (i%2 == 0) {
-                String[] path_split = ruta_optima.get(i).getFotoPath().split("/");
+                String[] path_split = ruta_optima.get(i/2).getFotoPath().split("/");
                 paths_sim[i] = "./Resources/Hilo/" + path_split[path_split.length -1];
-                System.out.println("path_sim["+i+"]: " + paths_sim[i]);
             }else{
-                if (i != lista_nodos.size()-1) {
+                if (i != paths_sim.length-1) {
                     if (pesos[cont] > 0) {
                         paths_sim[i] = "./Resources/Hilo/velocidad_normal.png";
                     }else{
                         paths_sim[i] = "./Resources/Hilo/velocidad_luz.png";
                     }
+                    cont++;
                 }else{
                     paths_sim[i] = "./Resources/Hilo/vista_ventana.png";
                 }
